@@ -26,13 +26,16 @@ def main():
     result = None
 
     while next_step != "clean":
+        # For testing only!
+        if next_step == "instructions": continue
+
         # execute module and get result and next step
         result, next_step = modules[next_step]()
         if result:
             # launch network propagation?
             pass
         else:
-            print(f"Module {next_step} faild :(")
+            print(f"Module {next_step} failed :(")
             break
 
 
