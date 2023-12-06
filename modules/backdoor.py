@@ -1,6 +1,6 @@
 def run():
     success = False
-    print("backdoor module activated!")
+    print("[+] Backdoor module activated!")
     # code ...
     success = True
     return success

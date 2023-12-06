@@ -1,7 +1,7 @@
 def run():
     next_action = ""
     data = "data"
-    print("privesc module activated...")
+    print("[+] Privesc module activated...")
 
     # code ...
 

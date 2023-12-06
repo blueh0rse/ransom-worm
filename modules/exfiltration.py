@@ -1,6 +1,6 @@
 def run():
     success = False
-    print("exfiltration module activated!")
+    print("[+] Exfiltration module activated!")
     # code ...
     success = True
     return success
