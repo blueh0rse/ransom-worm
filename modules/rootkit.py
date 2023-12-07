@@ -1,7 +1,7 @@
 def run():
     next_action = ""
-    data = "data"
-    print("rootkit module activated...")
+    data = "no_data"
+    print("[+] Rootkit module activated...")
 
     # code ...
 

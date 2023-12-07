@@ -1,0 +1,15 @@
+
+########## main.py - ransom-worm - Visual Studio Code ##########
+Mouse left click pressed at (227, 10)
+
+########## Terminal - aleix@aleix: ~/Escritorio/MALW/ransom-worm/server ##########
+Mouse left click pressed at (1325, 597)
+ "CTRL" c "ctrl"  "UP"  "up"  "ENTER"  "enter" 
+Mouse left click pressed at (1211, 674)
+ "CTRL" c "ctrl" l "CTRL"  "ctrl"  "BACKSPACE"  "backspace"  "CTRL" l "ctrl"  "UP"  "up"  "ENTER"  "enter" 
+
+########## main.py - ransom-worm - Visual Studio Code ##########
+Mouse left click pressed at (648, 989)
+ "CTRL" xc "ctrl" 
+Mouse left click pressed at (897, 779)
+ "CTRL" c

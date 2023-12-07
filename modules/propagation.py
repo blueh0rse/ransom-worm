@@ -1,7 +1,7 @@
 def run():
     next_action = ""
-    data = ""
-    print("propagation module activated...")
+    data = "no_data"
+    print("[+] Propagation module activated...")
 
     # code ...
 
