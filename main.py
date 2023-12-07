@@ -16,21 +16,7 @@ from modules import instructions
 #################################################     INITIALIZATIONS     #################################################
 ###########################################################################################################################
 
-# Deploys the ransomware
-def deploy_ransomware(key = None):
-    if type(key) == type(None): return
 
-    # PLACE CODE HERE AND MOVE IT TO THE MODULE...
-
-    return
-
-# Deploys the ransomware
-def decrypt_ransomware(key = None):
-    if type(key) == type(None): return
-
-    # PLACE CODE HERE AND MOVE IT TO THE MODULE...
-
-    return
 
 ###########################################################################################################################
 #####################################################     PROGRAM     #####################################################
@@ -48,6 +34,7 @@ def main():
         "keylogger": keylogger.run,
         "backdoor": backdoor.run,
         "instructions": instructions.run,
+        "ransomware": ransomware.run,
     }
 
     # First step
