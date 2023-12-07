@@ -31,7 +31,7 @@ def get_instruction():
 ###########################################################################################################################
 
 def run():
-    return_data = "data"
+    return_data = "no_data"
 
     instruction = get_instruction()
     if instruction: return_data = instruction

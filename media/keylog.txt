@@ -1,56 +1,11 @@
+Mouse left click pressed at (174, 549)
 
-########## main.py - ransom-worm - Visual Studio Code ##########
-Mouse left click pressed at (865, 676)
-Mouse left click pressed at (209, 534)
-
-########## instructions.txt - ransom-worm - Visual Studio Code ##########
-Mouse left click pressed at (921, 750)
-Mouse left click pressed at (829, 244)
-Mouse left click pressed at (829, 244)
- "BACKSPACE" 
-
-########## ● instructions.txt - ransom-worm - Visual Studio Code ##########
- "backspace"  "CTRL" s
-
-########## instructions.txt - ransom-worm - Visual Studio Code ##########
-w
-
-########## main.py - ransom-worm - Visual Studio Code ##########
- "ctrl" 
-Mouse left click pressed at (772, 744)
-Mouse left click pressed at (942, 388)
- "BACKSPACE" 
-
-########## ● main.py - ransom-worm - Visual Studio Code ##########
- "backspace"  "BACKSPACE"  "backspace" 5 "CTRL" s
-
-########## main.py - ransom-worm - Visual Studio Code ##########
- "ctrl" 
-Mouse left click pressed at (205, 533)
-
-########## instructions.txt - ransom-worm - Visual Studio Code ##########
-Mouse left click pressed at (834, 169)
-d
-
-########## ● instructions.txt - ransom-worm - Visual Studio Code ##########
-fhgdnsfds "CTRL" aw
-
-########## Visual Studio Code ##########
- "ctrl"  "ESC" 
-
-########## ● instructions.txt - ransom-worm - Visual Studio Code ##########
- "esc"  "CTRL" s
-
-########## instructions.txt - ransom-worm - Visual Studio Code ##########
-w
-
-########## main.py - ransom-worm - Visual Studio Code ##########
- "ctrl" 
-Mouse left click pressed at (184, 530)
-
-########## instructions.txt - ransom-worm - Visual Studio Code ##########
+########## keylog_1701943573.txt - ransom-worm - Visual Studio Code ##########
  "CTRL" w
 
 ########## main.py - ransom-worm - Visual Studio Code ##########
  "ctrl" 
-Mouse left click pressed at (1691, 494)
+Mouse left click pressed at (722, 307)
+ "CTRL" c "ctrl" 
+Mouse left click pressed at (938, 789)
+ "CTRL" c

