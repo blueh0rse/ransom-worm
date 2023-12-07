@@ -1,4 +1,6 @@
 Linux Mint ISO (linuxmint-19.2-cinnamon-64bit.iso): https://ftp.heanet.ie/pub/linuxmint.com/stable/19.2/
 
+sudo apt update
+sudo apt upgrade
 sudo apt install git
 sudo apt install python3-pip
