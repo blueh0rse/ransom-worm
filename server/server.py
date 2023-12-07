@@ -31,8 +31,8 @@ if __name__ == '__main__':
     def reset_instruction():
         with open(FILE_TO_SERVE, 'w') as file:
             file.write('# Write the instruction in the next line!\n') 
-        print("\nInstructions reseted!\n")
-        return "Instructions reseted!"
+        print("\nInstruction reseted!\n")
+        return "Instruction reseted!"
 
     @app.route('/upload_file', methods=['POST'])
     def upload_file():
