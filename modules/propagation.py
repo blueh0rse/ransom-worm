@@ -11,7 +11,7 @@ import struct
 import socket
 import sys
 
-ip = '192.168.x.x'
+ip = '10.0.2.15'
 port = 50001
 
 def gen_discover_packet(ad_id, os, hn, user, inf, func):
