@@ -6,3 +6,4 @@ sudo apt install git
 sudo apt install python3-pip -y   // to run main.py
 sudo apt install build-essential  // to compile c code
 sudo apt-get install python3-tk   // ransomware GUI
+install AnyDesk
