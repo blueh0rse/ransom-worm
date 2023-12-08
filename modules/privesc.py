@@ -120,9 +120,11 @@ def exploit_kernel():
     if exploit_to_run:
         is_root = run_exploit(exploit_to_run)
         print(f"is_root: {is_root}")
+        if is_root:
+            return True
     else:
         # continue checks...
-        pass
+        return False
 
 
 ###########################################################################################################################

