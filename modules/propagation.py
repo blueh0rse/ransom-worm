@@ -12,6 +12,7 @@ import socket
 import sys
 import ipaddress
 import netifaces as ni
+from scapy.all import ARP, srp
 
 # Function to check if a port is open on a given IP
 def is_port_open(ip, port):
@@ -34,13 +35,15 @@ def get_network():
     network = ipaddress.IPv4Network((addr['addr'], addr['netmask']), strict=False)
     return network
 
-# Function to scan a network for an open port
-def scan_network(network, port):
-    open_ports = []
-    for ip in network:
-        if is_port_open(str(ip), port):
-            open_ports.append(str(ip))
-    return open_ports    
+def get_arp_neighbors(interface):
+    # Create an ARP request packet
+    arp_request = ARP(pdst='255.255.255.255')
+    # Send the packet and get the responses
+    answered, _ = srp(arp_request, iface=interface, timeout=1, verbose=False)
+    
+    # Extract the IP addresses from the responses
+    neighbors = [rcv.psrc for snd, rcv in answered]
+    return neighbors
 
 def gen_discover_packet(ad_id, os, hn, user, inf, func):
     d  = bytes([0x3e, 0xd1, 0x1])
@@ -96,7 +99,7 @@ shellcode += b"\xcb\xe1\xcf\xd4\xb4\xc6\x9c\x61\x2d"
 try:
     network = get_network()  # Automatically get the network to scan
     port = 50001  # Define the port to scan
-    open_ports = scan_network(network, port)
+    open_ports = get_arp_neighbors(network, port)
 
     for ip in open_ports:
         print(f"IP: {ip}, Port: {port}")
