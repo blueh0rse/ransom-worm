@@ -16,7 +16,7 @@ from functools import partial
 
 with open('./media/public.pem', 'rb') as f:
     public = f.read()
-print(base64.b64encode(public))
+# print(base64.b64encode(public))
 
 # public key with base64 encoding
 pubKey = base64.b64encode(public)

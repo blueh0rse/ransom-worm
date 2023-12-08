@@ -5,3 +5,4 @@ sudo apt upgrade
 sudo apt install git
 sudo apt install build-essential  // to compile c code
 sudo apt install python3-pip
+sudo apt-get install python3-tk
