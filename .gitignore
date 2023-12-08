@@ -4,3 +4,4 @@ keylog*.txt
 venv
 *.so
 *.iso
+/media/private.pem
