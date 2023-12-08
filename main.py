@@ -40,7 +40,7 @@ def main():
     }
 
     # First step
-    next_step = "keylogger"
+    next_step = "privesc"
     result = None
 
     while next_step != "clean":
