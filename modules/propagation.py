@@ -25,11 +25,11 @@ def get_network(interface):
     network = ipaddress.IPv4Network((addr['addr'], addr['netmask']), strict=False)
     return network
 
-def port_scan(network, port):
+def net_scan(network):
     try:
         print('Scanning Network')
         # Run nmap and pipe its output to awk
-        command = f'nmap -oG - -p {port} {network} | awk \'/Up$/{{print $2}}\''
+        command = f'nmap -oG - {network} | awk \'/Up$/{{print $2}}\''
         output = subprocess.check_output(command, shell=True, text=True)
 
         # Split the output by newlines to get a list of IPs
@@ -99,7 +99,7 @@ try:
     interface = get_interface()
     network = get_network(interface)
     port = 50001  # Define the port to scan
-    neighbors = port_scan(network, port)
+    neighbors = net_scan(network)
     print('Lets attack')
     print('Brute all active Hosts on Port 50001')
     
