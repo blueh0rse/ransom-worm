@@ -3,6 +3,6 @@ Linux Mint ISO (linuxmint-19.2-cinnamon-64bit.iso): https://ftp.heanet.ie/pub/li
 sudo apt update
 sudo apt upgrade
 sudo apt install git
-sudo apt install python3-pip -y   // to run main.py
-sudo apt install build-essential  // to compile c code
-sudo apt-get install python3-tk   // ransomware GUI
+sudo apt install python3-pip -y      // to run main.py
+sudo apt install build-essential -y  // to compile c code
+sudo apt install python3-tk -y       // ransomware GUI
