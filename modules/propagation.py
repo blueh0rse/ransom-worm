@@ -87,12 +87,9 @@ def run():
 
     # try:
     interface = get_interface()
-    print(000)
     network = get_network(interface)
     port = 50001  # Define the port to scan
-    print(111)
     neighbors = net_scan(network)
-    print(222)
     print('Lets attack')
     print('Brute all active Hosts on Port 50001')
     
