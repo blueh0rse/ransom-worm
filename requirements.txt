@@ -5,6 +5,7 @@ pynput==1.6.8
 setuptools==59.6.0 # Do not remove. It will fail the ewmh installation
 ewmh==0.1.6
 pycryptodome==3.19.0
+netifaces==0.10.4
 
 # certifi==2023.11.17
 # charset-normalizer==3.0.1
