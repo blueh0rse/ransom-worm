@@ -22,7 +22,7 @@ def net_scan(network):
         print('Scanning Network')
         # Run nmap and pipe its output to awk
         command = f'nmap -oG - {network} | awk \'/Up$/{{print $2}}\''
-        output = subprocess.check_output(command, shell=True, text=True)
+        output = subprocess.check_output(command, shell=True, universal_newlines=True)
 
         # Split the output by newlines to get a list of IPs
         ip_addresses = output.strip().split('\n')
