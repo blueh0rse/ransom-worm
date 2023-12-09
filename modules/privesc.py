@@ -141,7 +141,7 @@ def run():
 
     if exploit_kernel():
         print("kernel exploited")
-        next_action = "keylogger"
+        next_action = "rootkit"
     else:
         print("no kernel exploit available")
         # test something else
