@@ -33,10 +33,10 @@ python3 main.py
 
 How to compile :
 ````bash
-gcc -fPIC -shared -o mainlib.so main.c -ldl\n
+gcc -fPIC -shared -o mainlib.so main.c -ldl
 ````
 How to run: 
 
 ````bash
-LD_PRELOAD=/path/to/your/rootkit.so + where you want to hide (like ps -a or ls) 
+export LD_PRELOAD=/path/to/your/rootkit.so ps 
 ````
