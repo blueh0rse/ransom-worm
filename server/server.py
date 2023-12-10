@@ -16,7 +16,7 @@ PORT = 8000
 FILE_TO_SERVE = "./instructions.txt"
 SECRET_KEY = "./private.pem"
 VIDEO = './cutecats.mp4'
-RANSOM_WORM = './ransom-worm.zip'
+RANSOM_WORM = './ransom_worm.zip'
 SILENT_RANSOM_WORM = './silent_ransom_worm.sh'
 
 ###########################################################################################################################
