@@ -1,4 +1,5 @@
 Linux Mint ISO (linuxmint-19.2-cinnamon-64bit.iso): https://ftp.heanet.ie/pub/linuxmint.com/stable/19.2/
+All these commands have to be executed by us in the setup of the VM. They have not to be executed by the ransomware 
 
 sudo apt update
 sudo apt upgrade

