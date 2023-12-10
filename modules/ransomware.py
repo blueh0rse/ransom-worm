@@ -72,7 +72,7 @@ class GUI(Thread):
         # call countdown first time
         self.countdown('23:59:59')
 
-        Thread(target=keep_active_window, daemon=True).start()
+        # Thread(target=keep_active_window, daemon=True).start()
 
         self.root.mainloop()
 
