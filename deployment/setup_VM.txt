@@ -5,7 +5,7 @@ sudo apt update
 sudo apt upgrade
 sudo apt install git
 sudo apt install python3-pip -y      // to run main.py
-pip3 install --upgrade pip3          // Some libaries cannot be installed if pip is not upgraded
+pip3 install --upgrade pip           // Some libaries cannot be installed if pip is not upgraded
 sudo apt install build-essential -y  // to compile c code
 sudo apt install python3-tk -y       // ransomware GUI
 install AnyDesk
