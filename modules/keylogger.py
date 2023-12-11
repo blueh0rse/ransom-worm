@@ -6,19 +6,6 @@ import os
 from pynput import keyboard, mouse
 from ewmh import EWMH
 
-# If libraries are not installed by default, automatically download and install them
-# try:
-#     from pynput import keyboard, mouse
-#     from ewmh import EWMH
-# except ImportError:
-#     import subprocess
-
-#     subprocess.check_call(["pip", "install", "pynput"])
-#     subprocess.check_call(["pip", "install", "ewmh"])
-
-#     from pynput import keyboard, mouse
-#     from ewmh import EWMH
-
 ###########################################################################################################################
 #################################################     INITIALIZATIONS     #################################################
 ###########################################################################################################################
