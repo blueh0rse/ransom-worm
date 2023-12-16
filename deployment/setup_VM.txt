@@ -1,8 +1,8 @@
 Linux Mint ISO (linuxmint-19.2-cinnamon-64bit.iso): https://ftp.heanet.ie/pub/linuxmint.com/stable/19.2/
 All these commands have to be executed by us in the setup of the VM. They have not to be executed by the ransomware 
 
-sudo apt update
-sudo apt upgrade
+sudo apt update                     //dont
+sudo apt upgrade                    //do it
 sudo apt install git
 sudo apt install python3-pip -y      // to run main.py
 pip3 install --upgrade pip           // Some libaries cannot be installed if pip is not upgraded
