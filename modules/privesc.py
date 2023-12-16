@@ -5,8 +5,8 @@
 import re
 import os
 import subprocess
-from packaging import version
 from pathlib import Path
+from packaging import version
 
 ###########################################################################################################################
 #################################################     INITIALIZATIONS     #################################################
@@ -14,7 +14,7 @@ from pathlib import Path
 
 
 # execute bash commands
-def exec_bash(cmd, output=True):
+def exec_bash(cmd):
     return subprocess.check_output(cmd, shell=True)
 
 
