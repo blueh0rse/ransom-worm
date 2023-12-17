@@ -152,7 +152,7 @@ def decrypt(dataFile, privateKeyFile):
     with open(decryptedFile, 'wb') as f:
         f.write(data)
 
-    #print('Decrypted file saved to ' + decryptedFile)
+    print('Decrypted file saved to ' + decryptedFile)
     os.remove(dataFile)
     
 def encrypt(dataFile, publicKey):
@@ -163,7 +163,7 @@ def encrypt(dataFile, publicKey):
     '''
     # read data from file
     extension = dataFile.suffix.lower()
-    #print(extension)
+    print(extension)
     dataFile = str(dataFile)
     with open(dataFile, 'rb') as f:
         data = f.read()
