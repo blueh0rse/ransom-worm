@@ -6,7 +6,7 @@ import os
 try: from pynput import keyboard, mouse
 except Exception as e: 
     with open('error_log.txt', 'a') as file:
-        file.write(f"{e}")
+        file.write(f"Import ERROR 'from pynput import keyboard, mouse': {e}")
 from ewmh import EWMH
 
 ###########################################################################################################################
