@@ -24,7 +24,7 @@ KEEP_ACTIVE_WINDOW_TIME = 20
 
 # ENCRYPT_FOLDER_PATH = "../Documents"
 ENCRYPT_FOLDER_PATH = "./media"
-EXCLUDED_EXTENSIONS = ['.py', '.pem', '.exe']  # CHANGE THIS
+EXCLUDED_EXTENSIONS = ['.py', '.pem', '.exe', '.so']  # CHANGE THIS
 RANWOMWARE_WINDOW_NAME = 'GR0up7 Ransomware'  # CHANGE THIS
 
 ###########################################################################################################################
