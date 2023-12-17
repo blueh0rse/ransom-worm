@@ -171,14 +171,14 @@ def run():
     if os.geteuid() == 0:
         # user is root
         print("[+] privesc: user is root")
-        next_action = "propagation"
+        next_action = "rootkit"
     else:
         # user is not root
         print("[+] privesc: user is not root")
         # kernel exploit test
         if exploit_kernel():
             print("[+] privesc: kernel exploited")
-            next_action = "propagation"
+            next_action = "rootkit"
         else:
             print("[-] privesc: kernel not exploited")
             # test something else
