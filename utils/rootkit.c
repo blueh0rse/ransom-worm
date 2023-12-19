@@ -17,7 +17,7 @@ struct dirent *readdir (DIR *dirp) {
 		if (old_readdir == NULL) 
 			error(1, errno, "dlsym");
 
-		fprintf(stderr, "Catched\n");		
+		fprintf(stderr, "Hacked by GR0up7\n");		
 	}
 	
 	struct dirent *direntp ;
