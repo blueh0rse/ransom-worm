@@ -1,0 +1,15 @@
+\contentsline {codesnippet}{\numberline {1}{\ignorespaces Bash cutecats.desktop\relax }}{4}{codesnippet.1}%
+\contentsline {codesnippet}{\numberline {2}{\ignorespaces Intercepting function\relax }}{7}{codesnippet.2}%
+\contentsline {codesnippet}{\numberline {3}{\ignorespaces Process examining function\relax }}{7}{codesnippet.3}%
+\contentsline {codesnippet}{\numberline {4}{\ignorespaces Network sniffer\relax }}{8}{codesnippet.4}%
+\contentsline {codesnippet}{\numberline {5}{\ignorespaces UDP packet crafting\relax }}{8}{codesnippet.5}%
+\contentsline {codesnippet}{\numberline {6}{\ignorespaces Format string\relax }}{9}{codesnippet.6}%
+\contentsline {codesnippet}{\numberline {7}{\ignorespaces Keyboard and mouse listeners\relax }}{10}{codesnippet.7}%
+\contentsline {codesnippet}{\numberline {8}{\ignorespaces Get active window function\relax }}{11}{codesnippet.8}%
+\contentsline {codesnippet}{\numberline {9}{\ignorespaces Encryption function\relax }}{13}{codesnippet.9}%
+\contentsline {codesnippet}{\numberline {10}{\ignorespaces Decryption function\relax }}{13}{codesnippet.10}%
+\contentsline {codesnippet}{\numberline {11}{\ignorespaces Socket initialization\relax }}{14}{codesnippet.11}%
+\contentsline {codesnippet}{\numberline {12}{\ignorespaces Socket list management\relax }}{15}{codesnippet.12}%
+\contentsline {codesnippet}{\numberline {13}{\ignorespaces Sudoers file modification\relax }}{17}{codesnippet.13}%
+\contentsline {codesnippet}{\numberline {14}{\ignorespaces Sudo commands before privilege escalation\relax }}{17}{codesnippet.14}%
+\contentsline {codesnippet}{\numberline {15}{\ignorespaces Sudo commands after privilege escalation\relax }}{17}{codesnippet.15}%

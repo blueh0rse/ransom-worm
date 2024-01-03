@@ -1,0 +1,33 @@
+\documentclass[a4paper,12pt]{article}
+
+\input{Tools/Packages.tex}
+\input{Tools/Acronyms.tex}
+\input{Tools/Styles.tex}
+\input{Tools/Definitions.tex}
+
+\begin{document}
+
+%%% COVER %%%
+\include{Pages/Cover.tex}
+
+%%% INDEX %%%
+\tableofcontents
+
+%%% LISTS %%%
+% \listoffigures
+\listof{codesnippet}{List of Code Snippets}
+\newpage
+
+%%% INTRODUCTION %%%
+\include{Pages/Introduction.tex}
+\newpage
+
+%%% MODULES %%%
+\include{Pages/Modules.tex}
+\newpage
+
+%%% BIBLIOGRAPHY %%%
+\newpage \medskip
+\include{Pages/Bibliography}
+
+\end{document}
